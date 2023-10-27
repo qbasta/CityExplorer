@@ -5,6 +5,12 @@
 <ul class="navbar-nav">
 @if (SignInManager.IsSignedIn(User))
 {
+        <li class="nav-item" style="align-self: center;">
+            @if (!string.IsNullOrEmpty(UserManager.GetUserAsync(User).Result.ProfilePicture))
+            {
+                <img style="width: 40px; height: 40px; object-fit: cover; border-radius: 30px" src="~/Uploads/@UserManager.GetUserAsync(User).Result.ProfilePicture">
+            }
+        </li>
     <li class="nav-item">
         <a  class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello @User.Identity?.Name!</a>
     </li>
