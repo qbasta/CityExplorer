@@ -33,6 +33,30 @@ namespace CityExplorer.Controllers
             return RedirectToAction("Index", "UserRoles");
         }
 
+        public async Task<IActionResult> DeleteUser(string id)
+        {
+            var user = await _userManager.FindByIdAsync(id);
+
+            if (user == null)
+            {
+                ViewBag.ErrorMessage = $"User with Id = {id} cannot be found";
+                return NotFound();
+            }
+            else
+            {
+                var result = await _userManager.DeleteAsync(user);
+                if (result.Succeeded)
+                {
+                    return RedirectToAction("UsersList");
+                }
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError("", error.Description);
+                }
+                return View("ListUsers");
+            }
+        }
+
         [HttpGet]
         public async Task<IActionResult> EditUser(string id) 
         {
