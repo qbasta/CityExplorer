@@ -19,6 +19,14 @@ builder.Services.AddIdentity<AppUser, IdentityRole>(options => options.SignIn.Re
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddTokenProvider<DataProtectorTokenProvider<AppUser>>(TokenOptions.DefaultProvider);
 
+builder.Services.AddAuthentication()
+    .AddGoogle(googleoptions =>
+    {
+        googleoptions.ClientId = builder.Configuration.GetSection("GoogleAuthSettings").GetValue<string>("ClientId");
+        googleoptions.ClientSecret = builder.Configuration.GetSection("GoogleAuthSettings").GetValue<string>("ClientSecret");
+    });
+    
+
 builder.Services.AddScoped<IFileService, FileService>();
 builder.Services.AddControllersWithViews();
 
