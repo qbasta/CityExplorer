@@ -1,6 +1,8 @@
-﻿ namespace CityExplorer.Enums
+﻿namespace CityExplorer.Enums
 {
-    public class Roles
+    public enum Roles
     {
+        Admin,
+        User
     }
 }
