@@ -7,6 +7,6 @@ namespace CityExplorer.Models
         public string? FirstName { get; set; }
         public string? LastName { get; set; }
         public string? ProfilePicture { get; set; }
-
+        public List<Review> Reviews { get; set; }
     }
 }
