@@ -1,0 +1,65 @@
+﻿@model IEnumerable<CityExplorer.Models.City>
+
+<div class="container pt-5">
+    <div class="row">
+        <div class="col-md-6">
+            <h3>Cities</h3>
+
+            @if (Model.Any())
+            {
+                <div class="card mb-3">
+                    <div class="card-header">List of Existing Cities</div>
+                    <div class="card-body">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Country</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var city in Model)
+                                {
+                                    <tr>
+                                        <td>@city.Name</td>
+                                        <td>@city.Country</td>
+                                        <td>
+                                            <form asp-action="Delete" asp-route-id="@city.CityId" method="post">
+                                                <a asp-action="Update" asp-route-id="@city.CityId" class="btn btn-primary">Edit City</a>
+                                                <span id="confirmDeleteSpan_@city.CityId" style="display:none">
+                                                    <span>Are you sure you want to delete?</span>
+                                                    <button type="submit" class="btn btn-danger">Yes</button>
+                                                    <button type="button" class="btn btn-primary" onclick="confirmDelete('@city.CityId',false)">No</button>
+                                                </span>
+
+                                                <span id="deleteSpan_@city.CityId">
+                                                    <button type="button" class="btn btn-danger" onclick="confirmDelete('@city.CityId',true)">Delete</button>
+                                                </span>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <a asp-action="Add" class="btn btn-primary" style="width:auto">Add new city</a>
+            }
+            else
+            {
+                <div class="card">
+                    <div class="card-header">No cities created yet</div>
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">Use the button below to create a new city</h5>
+                    <a asp-action="Add" class="btn btn-primary" style="width:auto">Add new city</a>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script src="~/js/site.js"></script>
+}

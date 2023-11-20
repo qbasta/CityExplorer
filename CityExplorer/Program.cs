@@ -1,7 +1,8 @@
 using CityExplorer.Data;
 using CityExplorer.Data.DbSeeder;
 using CityExplorer.Models;
-using CityExplorer.Services;
+using CityExplorer.Services.Abstract;
+using CityExplorer.Services.Implementation;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
@@ -34,6 +35,8 @@ builder.Services.AddAuthentication()
     
 
 builder.Services.AddScoped<IFileService, FileService>();
+builder.Services.AddScoped<ICityService, CityService>();
+builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();

@@ -11,5 +11,10 @@ namespace CityExplorer.Models
         public string Name { get; set; }
 
         public List<LandmarkCategory> LandmarkCategories { get; set; }
+
+        public Category()
+        {
+            LandmarkCategories = new List<LandmarkCategory>();
+        }
     }
 }

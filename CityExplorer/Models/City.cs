@@ -8,11 +8,16 @@ namespace CityExplorer.Models
 
         [Key]
         public int CityId { get; set; }
+        [Required]
         public string Name { get; set; }
+        [Required]
         public string Country { get; set; }
 
-        [InverseProperty("City")]
         public List<Landmark> Landmarks { get; set; }
 
+        public City()
+        {
+            Landmarks = new List<Landmark>();
+        }
     }
 }

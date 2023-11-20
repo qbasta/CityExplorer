@@ -1,4 +1,6 @@
-﻿namespace CityExplorer.Services
+﻿using CityExplorer.Services.Abstract;
+
+namespace CityExplorer.Services.Implementation
 {
     public class FileService : IFileService
     {
@@ -14,7 +16,7 @@
         {
             try
             {
-                var wwwPath = this.environment.WebRootPath;
+                var wwwPath = environment.WebRootPath;
                 var path = Path.Combine(wwwPath, "Uploads");
                 var path2 = Path.Combine(wwwPath, "/images/covers");
 
@@ -50,11 +52,11 @@
         {
             try
             {
-                var wwwPath = this.environment.WebRootPath;
+                var wwwPath = environment.WebRootPath;
                 var path = Path.Combine(wwwPath, "Uploads\\", imageFileName);
-                if (System.IO.File.Exists(path))
+                if (File.Exists(path))
                 {
-                    System.IO.File.Delete(path);
+                    File.Delete(path);
                     return true;
                 }
                 return false;

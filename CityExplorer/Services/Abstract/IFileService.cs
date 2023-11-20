@@ -1,4 +1,4 @@
-﻿namespace CityExplorer.Services
+﻿namespace CityExplorer.Services.Abstract
 {
     public interface IFileService
     {

@@ -1,0 +1,57 @@
+﻿@model IEnumerable<CityExplorer.Models.Category>
+
+<h1>CATEGORIES LIST</h1>
+
+@if (Model.Any())
+{
+    <div class="card mb-3">
+        <div class="card-header">List of Existing Categories</div>
+        <div class="card-body">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var category in Model)
+                    {
+                        <tr>
+                            <td>@category.Name</td>
+                            <td>
+                                <form asp-action="Delete" asp-route-id="@category.CategoryId" method="post">
+                                    <a asp-action="Update" asp-route-id="@category.CategoryId" class="btn btn-primary">Edit City</a>
+                                    <span id="confirmDeleteSpan_@category.CategoryId" style="display:none">
+                                        <span>Are you sure you want to delete?</span>
+                                        <button type="submit" class="btn btn-danger">Yes</button>
+                                        <button type="button" class="btn btn-primary" onclick="confirmDelete('@category.CategoryId',false)">No</button>
+                                    </span>
+
+                                    <span id="deleteSpan_@category.CategoryId">
+                                        <button type="button" class="btn btn-danger" onclick="confirmDelete('@category.CategoryId',true)">Delete</button>
+                                    </span>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <a asp-action="Add" class="btn btn-primary" style="width:auto">Add new category</a>
+}
+else
+{
+    <div class="card">
+        <div class="card-header">No categories created yet</div>
+    </div>
+    <div class="card-body">
+        <h5 class="card-title">Use the button below to create a new category</h5>
+        <a asp-action="Add" class="btn btn-primary" style="width:auto">Add new category</a>
+    </div>
+}
+
+@section Scripts{
+    <script src="~/js/site.js"></script>
+}

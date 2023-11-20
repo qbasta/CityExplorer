@@ -7,7 +7,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using CityExplorer.Models;
-using CityExplorer.Services;
+using CityExplorer.Services.Abstract;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
