@@ -19,6 +19,20 @@ builder.Services.AddIdentity<AppUser, IdentityRole>(options => options.SignIn.Re
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddTokenProvider<DataProtectorTokenProvider<AppUser>>(TokenOptions.DefaultProvider);
 
+builder.Services.AddAuthentication()
+    .AddGoogle(googleoptions =>
+    {
+        googleoptions.ClientId = builder.Configuration.GetSection("GoogleAuthSettings").GetValue<string>("ClientId");
+        googleoptions.ClientSecret = builder.Configuration.GetSection("GoogleAuthSettings").GetValue<string>("ClientSecret");
+    })
+    .AddFacebook(facebookoptions =>
+    {
+        facebookoptions.AppId = builder.Configuration.GetSection("FacebookAuthSettings").GetValue<string>("AppId");
+        facebookoptions.AppSecret = builder.Configuration.GetSection("FacebookAuthSettings").GetValue<string>("AppSecret");
+    });
+
+    
+
 builder.Services.AddScoped<IFileService, FileService>();
 builder.Services.AddControllersWithViews();
 
