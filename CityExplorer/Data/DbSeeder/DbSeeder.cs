@@ -6,10 +6,52 @@ namespace CityExplorer.Data.DbSeeder
 {
     public static class DbSeeder
     {
-        public static void Seed(UserManager<AppUser> userManager, RoleManager<IdentityRole> roleManager)
+        public static void Seed(ApplicationDbContext context, UserManager<AppUser> userManager, RoleManager<IdentityRole> roleManager)
         {
             SeedRoles(roleManager);
             SeedUsers(userManager);
+            SeedCategories(context);
+            SeedCities(context);
+
+        }
+        private static void SeedCategories(ApplicationDbContext context)
+        {
+            if (!context.Categories.Any())
+            {
+                var categories = new List<Category>
+                {
+                    new Category { Name = "Muzeum" },
+                    new Category { Name = "Park" },
+                    new Category { Name = "Fontanna" },
+                    new Category { Name = "Plac" },
+                };
+
+                context.Categories.AddRange(categories);
+                context.SaveChanges();
+            }
+        }
+
+        private static void SeedCities(ApplicationDbContext context)
+        {
+            if (!context.Cities.Any())
+            {
+                var cities = new List<City>
+            {
+                new City
+                {
+                    Name = "Rzym",
+                    Country = "Włochy",
+                    Landmarks = new List<Landmark>(),
+                },
+                new City
+                {
+                    Name = "Berlin",
+                    Country = "Niemcy",
+                    Landmarks = new List<Landmark>(),
+                },
+
+            };
+            }
         }
 
         private static void SeedRoles(RoleManager<IdentityRole> roleManager)
