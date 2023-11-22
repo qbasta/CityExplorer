@@ -20,16 +20,16 @@
                         <tr>
                             <td>@category.Name</td>
                             <td>
-                                <form asp-action="Delete" asp-route-id="@category.CategoryId" method="post">
-                                    <a asp-action="Update" asp-route-id="@category.CategoryId" class="btn btn-primary">Edit City</a>
-                                    <span id="confirmDeleteSpan_@category.CategoryId" style="display:none">
+                                <form asp-action="Delete" asp-route-id="@category.Id" method="post">
+                                    <a asp-action="Update" asp-route-id="@category.Id" class="btn btn-primary">Edit City</a>
+                                    <span id="confirmDeleteSpan_@category.Id" style="display:none">
                                         <span>Are you sure you want to delete?</span>
                                         <button type="submit" class="btn btn-danger">Yes</button>
-                                        <button type="button" class="btn btn-primary" onclick="confirmDelete('@category.CategoryId',false)">No</button>
+                                        <button type="button" class="btn btn-primary" onclick="confirmDelete('@category.Id',false)">No</button>
                                     </span>
 
-                                    <span id="deleteSpan_@category.CategoryId">
-                                        <button type="button" class="btn btn-danger" onclick="confirmDelete('@category.CategoryId',true)">Delete</button>
+                                    <span id="deleteSpan_@category.Id">
+                                        <button type="button" class="btn btn-danger" onclick="confirmDelete('@category.Id',true)">Delete</button>
                                     </span>
                                 </form>
                             </td>

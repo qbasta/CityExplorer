@@ -25,16 +25,16 @@
                                         <td>@city.Name</td>
                                         <td>@city.Country</td>
                                         <td>
-                                            <form asp-action="Delete" asp-route-id="@city.CityId" method="post">
-                                                <a asp-action="Update" asp-route-id="@city.CityId" class="btn btn-primary">Edit City</a>
-                                                <span id="confirmDeleteSpan_@city.CityId" style="display:none">
+                                            <form asp-action="Delete" asp-route-id="@city.Id" method="post">
+                                                <a asp-action="Update" asp-route-id="@city.Id" class="btn btn-primary">Edit City</a>
+                                                <span id="confirmDeleteSpan_@city.Id" style="display:none">
                                                     <span>Are you sure you want to delete?</span>
                                                     <button type="submit" class="btn btn-danger">Yes</button>
-                                                    <button type="button" class="btn btn-primary" onclick="confirmDelete('@city.CityId',false)">No</button>
+                                                    <button type="button" class="btn btn-primary" onclick="confirmDelete('@city.Id',false)">No</button>
                                                 </span>
 
-                                                <span id="deleteSpan_@city.CityId">
-                                                    <button type="button" class="btn btn-danger" onclick="confirmDelete('@city.CityId',true)">Delete</button>
+                                                <span id="deleteSpan_@city.Id">
+                                                    <button type="button" class="btn btn-danger" onclick="confirmDelete('@city.Id',true)">Delete</button>
                                                 </span>
                                             </form>
                                         </td>

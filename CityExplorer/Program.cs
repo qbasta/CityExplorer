@@ -4,7 +4,6 @@ using CityExplorer.Models;
 using CityExplorer.Services.Abstract;
 using CityExplorer.Services.Implementation;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -23,16 +22,18 @@ builder.Services.AddIdentity<AppUser, IdentityRole>(options => options.SignIn.Re
 builder.Services.AddAuthentication()
     .AddGoogle(googleoptions =>
     {
-        googleoptions.ClientId = builder.Configuration.GetSection("GoogleAuthSettings").GetValue<string>("ClientId");
-        googleoptions.ClientSecret = builder.Configuration.GetSection("GoogleAuthSettings").GetValue<string>("ClientSecret");
+        googleoptions.ClientId = builder.Configuration.GetSection("GoogleAuthSettings")
+            .GetValue<string>("ClientId") ?? throw new NullReferenceException();
+        googleoptions.ClientSecret = builder.Configuration.GetSection("GoogleAuthSettings")
+            .GetValue<string>("ClientSecret") ?? throw new NullReferenceException();
     })
     .AddFacebook(facebookoptions =>
     {
-        facebookoptions.AppId = builder.Configuration.GetSection("FacebookAuthSettings").GetValue<string>("AppId");
-        facebookoptions.AppSecret = builder.Configuration.GetSection("FacebookAuthSettings").GetValue<string>("AppSecret");
+        facebookoptions.AppId = builder.Configuration.GetSection("FacebookAuthSettings")
+            .GetValue<string>("AppId") ?? throw new NullReferenceException();
+        facebookoptions.AppSecret = builder.Configuration.GetSection("FacebookAuthSettings")
+            .GetValue<string>("AppSecret") ?? throw new NullReferenceException();
     });
-
-    
 
 builder.Services.AddScoped<IFileService, FileService>();
 builder.Services.AddScoped<ICityService, CityService>();

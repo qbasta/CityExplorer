@@ -50,7 +50,7 @@ namespace CityExplorer.Services.Implementation
                     return false;
 
                 // Usuń powiązane LandmarkCategories
-                _context.LandmarkCategories.RemoveRange(_context.LandmarkCategories.Where(lc => lc.CategoryId == data.CategoryId));
+                _context.LandmarkCategories.RemoveRange(_context.LandmarkCategories.Where(lc => lc.CategoryId == data.Id));
 
                 _context.Categories.Remove(data);
                 _context.SaveChanges();

@@ -35,7 +35,7 @@ namespace CityExplorer.Data.DbSeeder
         {
             if (!context.Cities.Any())
             {
-                var cities = new List<City>
+            var cities = new List<City>
             {
                 new City
                 {
@@ -51,6 +51,8 @@ namespace CityExplorer.Data.DbSeeder
                 },
 
             };
+            context.Cities.AddRange(cities);
+            context.SaveChanges();
             }
         }
 
