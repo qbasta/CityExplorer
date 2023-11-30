@@ -1,6 +1,5 @@
 ﻿using CityExplorer.Models;
 using CityExplorer.Services.Abstract;
-using Humanizer.Localisation;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CityExplorer.Controllers
@@ -60,10 +59,10 @@ namespace CityExplorer.Controllers
         }
 
         public IActionResult Delete(int id)
-{
-    var result = _categoryService.Delete(id);
-    return RedirectToAction("GetAll");
-}
+        {
+            var result = _categoryService.Delete(id);
+            return RedirectToAction("GetAll");
+        }
 
         public IActionResult GetAll()
         {
