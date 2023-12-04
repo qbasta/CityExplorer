@@ -1,0 +1,54 @@
+﻿@model CityExplorer.ViewModels.LandmarkListViewModel
+@{
+}
+
+<div class="tbl-container">
+    <h2>Lista zabytków</h2>
+    <a asp-action="Add" class="btn btn-default">Dodaj zabytek</a>
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Zdjęcie</th>
+            <th>Nazwa</th>
+            <th>Kategoria</th>
+            <th>Godziny otwarcia</th>
+            <th>Czas zwiedzania</th>
+            <th>Miasto</th>
+            <th>Akcja</th>
+        </tr>
+        </thead>
+        @foreach (var item in Model.LandmarkList)
+        {
+            <tr>
+                <td><img style="height:90px;width:90px" src="/Uploads/@item.ImagePath" /></td>
+                <td>@item.Name</td>
+                <td>@item.CategoryNames</td>
+                <td>@item.OpeningHours</td>
+                <td>@item.TourDuration</td>
+                <td>@item.CityId</td>
+
+                <td>
+                    <form asp-action="Delete" asp-route-id="@item.Id" method="post">
+                    <a href="/Landmark/Edit?id=@item.Id" class="btn btn-default">Edytuj</a>
+                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-default">Szczegóły</a>
+                        <span id="confirmDeleteSpan_@item.Id" style="display:none">
+                            <span>Are you sure you want to delete?</span>
+                            <button type="submit" class="btn btn-danger">Yes</button>
+                            <button type="button" class="btn btn-primary" onclick="confirmDelete('@item.Id',false)">No</button>
+                        </span>
+
+                        <span id="deleteSpan_@item.Id">
+                            <button type="button" class="btn btn-danger" onclick="confirmDelete('@item.Id',true)">Delete</button>
+                        </span>
+    
+                    </form>
+                </td>
+            </tr>
+        }
+
+    </table>
+</div>
+
+@section Scripts{
+    <script src="~/js/site.js"></script>
+}

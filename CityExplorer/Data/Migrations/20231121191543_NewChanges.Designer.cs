@@ -4,6 +4,7 @@ using CityExplorer.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CityExplorer.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231121191543_NewChanges")]
+    partial class NewChanges
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -181,9 +184,6 @@ namespace CityExplorer.Data.Migrations
                         .HasColumnType("int");
 
                     b.Property<int>("CategoryId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Id")
                         .HasColumnType("int");
 
                     b.HasKey("LandmarkId", "CategoryId");
@@ -358,13 +358,13 @@ namespace CityExplorer.Data.Migrations
 
             modelBuilder.Entity("CityExplorer.Models.Landmark", b =>
                 {
-                    b.HasOne("CityExplorer.Models.City", "Country")
+                    b.HasOne("CityExplorer.Models.City", "City")
                         .WithMany("Landmarks")
                         .HasForeignKey("CityId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Country");
+                    b.Navigation("City");
                 });
 
             modelBuilder.Entity("CityExplorer.Models.LandmarkCategory", b =>
@@ -376,7 +376,7 @@ namespace CityExplorer.Data.Migrations
                         .IsRequired();
 
                     b.HasOne("CityExplorer.Models.Landmark", "Landmark")
-                        .WithMany()
+                        .WithMany("LandmarkCategories")
                         .HasForeignKey("LandmarkId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -473,6 +473,8 @@ namespace CityExplorer.Data.Migrations
 
             modelBuilder.Entity("CityExplorer.Models.Landmark", b =>
                 {
+                    b.Navigation("LandmarkCategories");
+
                     b.Navigation("Reviews");
                 });
 #pragma warning restore 612, 618

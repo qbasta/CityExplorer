@@ -1,9 +1,9 @@
 using CityExplorer.Data;
 using CityExplorer.Data.DbSeeder;
 using CityExplorer.Models;
-using CityExplorer.Services;
+using CityExplorer.Services.Abstract;
+using CityExplorer.Services.Implementation;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -19,7 +19,26 @@ builder.Services.AddIdentity<AppUser, IdentityRole>(options => options.SignIn.Re
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddTokenProvider<DataProtectorTokenProvider<AppUser>>(TokenOptions.DefaultProvider);
 
+builder.Services.AddAuthentication()
+    .AddGoogle(googleoptions =>
+    {
+        googleoptions.ClientId = builder.Configuration.GetSection("GoogleAuthSettings")
+            .GetValue<string>("ClientId") ?? throw new NullReferenceException();
+        googleoptions.ClientSecret = builder.Configuration.GetSection("GoogleAuthSettings")
+            .GetValue<string>("ClientSecret") ?? throw new NullReferenceException();
+    })
+    .AddFacebook(facebookoptions =>
+    {
+        facebookoptions.AppId = builder.Configuration.GetSection("FacebookAuthSettings")
+            .GetValue<string>("AppId") ?? throw new NullReferenceException();
+        facebookoptions.AppSecret = builder.Configuration.GetSection("FacebookAuthSettings")
+            .GetValue<string>("AppSecret") ?? throw new NullReferenceException();
+    });
+
 builder.Services.AddScoped<IFileService, FileService>();
+builder.Services.AddScoped<ICityService, CityService>();
+builder.Services.AddScoped<ICategoryService, CategoryService>();
+builder.Services.AddScoped<ILandmarkService, LandmarkService>();
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
@@ -48,7 +67,8 @@ using (var scope = scopeFactory.CreateScope())
 {
     var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
     var userManager = scope.ServiceProvider.GetRequiredService<UserManager<AppUser>>();
-    DbSeeder.Seed(userManager, roleManager);
+    var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    DbSeeder.Seed(context, userManager, roleManager);
 }
 
 app.MapControllerRoute(

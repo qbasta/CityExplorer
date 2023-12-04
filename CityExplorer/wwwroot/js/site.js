@@ -3,7 +3,7 @@
 
 // Write your JavaScript code.
 
-function confirmDeleteAction(uniqueId, isDeleteClicked) {
+function confirmDelete(uniqueId, isDeleteClicked) {
     var deleteSpan = $("#deleteSpan_" + uniqueId);
     var confirmDeleteSpan = $("#confirmDeleteSpan_" + uniqueId);
 
