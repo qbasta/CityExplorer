@@ -1,18 +1,14 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using CityExplorer.Models.Base;
 using System.ComponentModel.DataAnnotations;
 
-namespace CityExplorer.Models
+namespace CityExplorer.Models;
+
+public class City : ModelBase
 {
-    public class City
-    {
+    [Required]
+    public string Name { get; set; } = "Unknown City";
+    [Required]
+    public string Country { get; set; } = "Unknown Country";
 
-        [Key]
-        public int CityId { get; set; }
-        public string Name { get; set; }
-        public string Country { get; set; }
-
-        [InverseProperty("City")]
-        public List<Landmark> Landmarks { get; set; }
-
-    }
+    public List<Landmark> Landmarks { get; set; } = new();
 }

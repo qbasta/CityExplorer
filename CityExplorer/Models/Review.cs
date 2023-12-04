@@ -1,17 +1,17 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
+using CityExplorer.Models.Base;
 
 namespace CityExplorer.Models
 {
-    public class Review
+    public class Review : ModelBase
     {
-        public int ReviewId { get; set; }
-        public string Text { get; set; }
-        public int Rating { get; set; }
+        public string? Text     { get; set; }
+        public int     Rating   { get; set; }
 
-        public string AppUserId { get; set; }
-        public AppUser AppUser { get; set; }
+        public required string AppUserId { get; set; }
+        public required AppUser AppUser  { get; set; }
 
-        public int LandmarkId { get; set; }
-        public Landmark Landmark { get; set; }
+        public int LandmarkId             { get; set; }
+        public required Landmark Landmark { get; set; }
     }
 }

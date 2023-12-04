@@ -1,11 +1,16 @@
-﻿namespace CityExplorer.Models
-{
-    public class LandmarkCategory
-    {
-        public int LandmarkId { get; set; }
-        public Landmark Landmark { get; set; }
+﻿using CityExplorer.Models.Base;
+using System.ComponentModel.DataAnnotations.Schema;
 
-        public int CategoryId { get; set; }
-        public Category Category { get; set; }
-    }
+namespace CityExplorer.Models;
+
+public class LandmarkCategory : ModelBase
+{
+    [ForeignKey("Landmark")]
+    public int LandmarkId       { get; set; }
+    public Landmark Landmark    { get; set; }
+
+    [ForeignKey("Category")]
+    public int CategoryId       { get; set; }
+    public Category Category    { get; set; }
+
 }
