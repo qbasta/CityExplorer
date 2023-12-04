@@ -40,6 +40,7 @@
                         <span id="deleteSpan_@item.Id">
                             <button type="button" class="btn btn-danger" onclick="confirmDelete('@item.Id',true)">Delete</button>
                         </span>
+                        <button type="button" class="btn btn-success" onclick="addToUserList('@item.Id')">Dodaj do listy</button>
     
                     </form>
                 </td>
@@ -51,4 +52,32 @@
 
 @section Scripts{
     <script src="~/js/site.js"></script>
+
+    <script>
+        function addToUserList(landmarkId) {
+            $.ajax({
+                url: "/User/AddToUserLandmarks",
+                method: "POST",
+                data: { landmarkId: landmarkId },
+                success: function (response) {
+                    if (response.success) {
+                        if (response.alreadyAdded) {
+                            alert("Ten zabytek jest już na Twojej liście.");
+                        } else {
+                            alert("Zabytek został dodany do Twojej listy!");
+                        }
+                    } else {
+                        alert("Wystąpił błąd podczas dodawania zabytku do listy.");
+                    }
+                },
+                error: function () {
+                    alert("Wystąpił błąd podczas komunikacji z serwerem.");
+                }
+            });
+        }
+    </script>
+
+
+
+
 }

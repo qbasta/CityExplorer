@@ -1,0 +1,37 @@
+﻿@model List<CityExplorer.Models.Landmark>
+
+<div class="tbl-container">
+    <h2>Twoje zabytki</h2>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Zdjęcie</th>
+                <th>Nazwa</th>
+                <th>Kategoria</th>
+                <th>Godziny otwarcia</th>
+                <th>Czas zwiedzania</th>
+                <th>Miasto</th>
+                <th>Akcja</th>
+            </tr>
+        </thead>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td><img style="height:90px;width:90px" src="/Uploads/@item.ImagePath" /></td>
+                <td>@item.Name</td>
+                <td>@item.CategoryNames</td>
+                <td>@item.OpeningHours</td>
+                <td>@item.TourDuration</td>
+                <td>@item.CityId</td>
+
+                <td>
+                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-default">Szczegóły</a>
+                    <form asp-action="RemoveFromUserLandmarks" method="post">
+                        <input type="hidden" name="landmarkId" value="@item.Id" />
+                        <button type="submit" class="btn btn-danger">Usuń z listy</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </table>
+</div>
