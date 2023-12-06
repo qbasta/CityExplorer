@@ -1,6 +1,7 @@
 ﻿using CityExplorer.Data;
 using CityExplorer.Models;
 using CityExplorer.Services.Abstract;
+using Microsoft.EntityFrameworkCore;
 
 namespace CityExplorer.Services.Implementation
 {
@@ -13,16 +14,21 @@ namespace CityExplorer.Services.Implementation
             _context = context;
         }
 
-        public List<Landmark> GetUserLandmarks(string userId)
+        public List<Landmark> GetUserLandmarks(string userId, bool includeReviews = false)
         {
-            // Tutaj dodaj logikę pobierania zabytków użytkownika na podstawie userId
-            // Przykład, zakładając, że UserLandmarks to tabela łącząca użytkownika z zabytkami
-            var userLandmarks = _context.UserLandmarks
-                .Where(ul => ul.AppUserId == userId)
-                .Select(ul => ul.Landmark)
-                .ToList();
+            var query = _context.UserLandmarks
+                        .Where(ul => ul.AppUserId == userId);
 
-            return userLandmarks;
+            if (includeReviews)
+            {
+                // Move Include before Select
+                query = query.Include(ul => ul.Landmark.Reviews);
+            }
+
+            // Now apply the Select method
+            var landmarks = query.Select(ul => ul.Landmark).ToList();
+
+            return landmarks;
         }
 
         public bool RemoveFromUserLandmarks(string userId, int landmarkId)

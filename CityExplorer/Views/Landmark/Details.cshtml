@@ -64,3 +64,42 @@
     <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
     <a asp-action="LandmarkList">Back to List</a>
 </div>
+
+
+@if (User.Identity.IsAuthenticated)
+{
+    <h4>Add Review</h4>
+    <form asp-action="AddReview" method="post">
+        <input type="hidden" name="LandmarkId" value="@Model.Id" />
+        <div class="form-group">
+            <label for="Rating">Rating:</label>
+            <input type="number" class="form-control" name="Rating" required min="1" max="5" />
+        </div>
+        <div class="form-group">
+            <label for="Text">Comment:</label>
+            <textarea class="form-control" name="Text" required></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit Review</button>
+    </form>
+}
+
+<h4>Reviews</h4>
+@foreach (var review in Model.Reviews)
+{
+    <div>
+        @if (review.AppUser != null)
+        {
+            <strong>@review.AppUser.FirstName</strong>
+        }
+        else
+        {
+            <strong>Unknown User</strong>
+        }
+
+        <p>Rating: @review.Rating</p>
+        <p>Date: @review.Date.ToShortDateString()</p>
+        <p>@review.Text</p>
+        <hr />
+    </div>
+}
+

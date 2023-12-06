@@ -1,9 +1,11 @@
 ﻿using CityExplorer.Data;
 using CityExplorer.Models;
 using CityExplorer.Services.Abstract;
+using CityExplorer.Services.Implementation;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace CityExplorer.Controllers
 {
@@ -13,15 +15,17 @@ namespace CityExplorer.Controllers
         private readonly ICategoryService _categoryService;
         private readonly ICityService _cityService;
         private readonly IFileService _fileService;
+        private readonly IUserLandmarkService _userLandmarkService;
         //private readonly IReviewService _reviewService;
         private readonly ApplicationDbContext _context;
 
-        public LandmarkController(ILandmarkService landmarkService, ICategoryService categoryService, ICityService cityService, IFileService fileService, ApplicationDbContext context)
+        public LandmarkController(ILandmarkService landmarkService, ICategoryService categoryService, ICityService cityService, IFileService fileService, IUserLandmarkService userLandmarkService ,ApplicationDbContext context)
         {
             _landmarkService = landmarkService;
             _categoryService = categoryService;
             _cityService = cityService;
             _fileService = fileService;
+            _userLandmarkService = userLandmarkService;
             _context = context;
         }
 
@@ -127,6 +131,37 @@ namespace CityExplorer.Controllers
 
         }
 
+        [HttpPost]
+        public IActionResult AddReview(Review model)
+        {
+            try
+            {
+                if (User.Identity.IsAuthenticated)
+                {
+                    model.Date = DateTime.Now;
+
+                    // Znajdź użytkownika na podstawie jego identyfikatora
+                    var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                    var user = _context.Users.Find(userId);
+
+                    // Ustaw użytkownika dla modelu recenzji
+                    model.AppUser = user;
+
+                    _context.Reviews.Add(model);
+                    _context.SaveChanges();
+
+                    TempData["msg"] = "Review added successfully.";
+                }
+
+                return RedirectToAction("Details", new { id = model.LandmarkId });
+            }
+            catch (DbUpdateException ex)
+            {
+                TempData["msg"] = "An error occurred while saving the review.";
+                return RedirectToAction("Details", new { id = model.LandmarkId });
+            }
+        }
+
         public IActionResult Details(int? id)
         {
             if (id == null || _context.Landmarks == null)
@@ -136,22 +171,30 @@ namespace CityExplorer.Controllers
 
             var landmark = _context.Landmarks
                 .Include(l => l.Country)
+                .Include(l => l.Reviews)
+                .ThenInclude(l => l.AppUser)// Include reviews
                 .FirstOrDefault(m => m.Id == id);
 
             if (landmark == null)
             {
                 return NotFound();
             }
-            return View(landmark);
-            
-                
 
+            return View(landmark);
         }
+
 
         public IActionResult LandmarkList()
         {
             var data = _landmarkService.List();
             return View(data);
+        }
+
+        public IActionResult UserLandmarks()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userLandmarks = _userLandmarkService.GetUserLandmarks(userId, includeReviews: true);
+            return View(userLandmarks);
         }
 
         public IActionResult Delete(int id)

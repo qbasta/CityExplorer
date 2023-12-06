@@ -25,7 +25,7 @@
                 <td>@item.CityId</td>
 
                 <td>
-                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-default">Szczegóły</a>
+                    <a href="/Landmark/Details?id=@item.Id" class="btn btn-default">Szczegóły</a>
                     <form asp-action="RemoveFromUserLandmarks" method="post">
                         <input type="hidden" name="landmarkId" value="@item.Id" />
                         <button type="submit" class="btn btn-danger">Usuń z listy</button>
