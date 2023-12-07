@@ -140,15 +140,18 @@ namespace CityExplorer.Controllers
                 {
                     model.Date = DateTime.Now;
 
-                    // Znajdź użytkownika na podstawie jego identyfikatora
                     var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
                     var user = _context.Users.Find(userId);
 
-                    // Ustaw użytkownika dla modelu recenzji
+                    // Set the user role for the model review
                     model.AppUser = user;
 
                     _context.Reviews.Add(model);
                     _context.SaveChanges();
+
+                    // Usunięcie linii kodu, która dodaje żądanie typu "ReviewId" do tożsamości użytkownika
+                    // var reviewIdClaim = new Claim("ReviewId", model.Id.ToString());
+                    // User.AddIdentity(new ClaimsIdentity(new[] { reviewIdClaim }));
 
                     TempData["msg"] = "Review added successfully.";
                 }
@@ -160,6 +163,29 @@ namespace CityExplorer.Controllers
                 TempData["msg"] = "An error occurred while saving the review.";
                 return RedirectToAction("Details", new { id = model.LandmarkId });
             }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult DeleteReview(Review model)
+        {
+            var review = _context.Reviews.Find(model.Id);
+
+            // Sprawdzenie, czy zalogowany użytkownik to autor recenzji lub administrator
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var isAdmin = User.IsInRole("Admin");
+            if (User.Identity.IsAuthenticated && (review.AppUserId == userId || isAdmin))
+            {
+                _context.Reviews.Remove(review);
+                _context.SaveChanges();
+                TempData["msg"] = "Recenzja została usunięta pomyślnie.";
+            }
+            else
+            {
+                TempData["msg"] = "Nie masz uprawnień do usunięcia tej recenzji.";
+            }
+
+            return RedirectToAction("Details", new { id = model.LandmarkId });
         }
 
         public IActionResult Details(int? id)

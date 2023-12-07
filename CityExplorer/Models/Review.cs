@@ -9,8 +9,9 @@ namespace CityExplorer.Models
         public int      Rating   { get; set; }
         public DateTime Date     { get; set; }
 
-        public required string AppUserId { get; set; }
-        public required AppUser AppUser  { get; set; }
+
+        public required string  AppUserId { get; set; }
+        public required AppUser AppUser   { get; set; }
 
         public int LandmarkId             { get; set; }
         public required Landmark Landmark { get; set; }

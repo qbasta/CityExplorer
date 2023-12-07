@@ -37,7 +37,7 @@ public class Landmark : ModelBase
         {
             if (Reviews.Any())
             {
-                return Reviews.Average(r => r.Rating);
+                return Math.Round(Reviews.Average(r => r.Rating), 2);
             }
             return 0;
         }

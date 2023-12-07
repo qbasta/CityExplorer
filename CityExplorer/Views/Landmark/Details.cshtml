@@ -1,4 +1,9 @@
-﻿@model CityExplorer.Models.Landmark
+﻿@using System.Security.Claims;
+@using Microsoft.AspNetCore.Authorization;
+@model CityExplorer.Models.Landmark
+@inject IAuthorizationService AuthorizationService
+
+
 
 @{
     ViewData["Title"] = "Details";
@@ -58,13 +63,18 @@
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Country.Country)
         </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.AverageRating)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.AverageRating)
+        </dd>
     </dl>
 </div>
 <div>
     <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
     <a asp-action="LandmarkList">Back to List</a>
 </div>
-
 
 @if (User.Identity.IsAuthenticated)
 {
@@ -89,7 +99,7 @@
     <div>
         @if (review.AppUser != null)
         {
-            <strong>@review.AppUser.FirstName</strong>
+            <strong>@review.AppUser.FirstName @review.AppUser.LastName</strong>
         }
         else
         {
@@ -97,8 +107,18 @@
         }
 
         <p>Rating: @review.Rating</p>
-        <p>Date: @review.Date.ToShortDateString()</p>
+        <p>Date: @review.Date.ToString("dd-MM-yyyy HH:mm")</p>
         <p>@review.Text</p>
+
+        @if ((await AuthorizationService.AuthorizeAsync(User, review.Id, "CanDeleteReview")).Succeeded)
+        {
+            <form asp-action="DeleteReview" method="post">
+                <input type="hidden" name="Id" value="@review.Id" />
+                <input type="hidden" name="LandmarkId" value="@Model.Id" />
+                <button type="submit">Delete Review</button>
+            </form>
+        }
+
         <hr />
     </div>
 }
