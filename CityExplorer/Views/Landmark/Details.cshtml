@@ -81,22 +81,78 @@
     <h4>Add Review</h4>
     <form asp-action="AddReview" method="post">
         <input type="hidden" name="LandmarkId" value="@Model.Id" />
-        <div class="form-group">
+        <div class="form-group" id="ratingDiv">
             <label for="Rating">Rating:</label>
-            <input type="number" class="form-control" name="Rating" required min="1" max="5" />
+            <input type="number" class="form-control" name="Rating" min="1" max="5" id="ratingInput" required />
         </div>
         <div class="form-group">
             <label for="Text">Comment:</label>
             <textarea class="form-control" name="Text" required></textarea>
         </div>
+        <div class="form-group">
+            <label for="Tag">Tag:</label>
+            <select class="form-control" name="Tag" required id="tagSelect">
+                <option value="recenzja">Recenzja</option>
+                <option value="porada">Porada</option>
+            </select>
+        </div>
         <button type="submit" class="btn btn-primary">Submit Review</button>
     </form>
+    <script>
+        document.getElementById('tagSelect').addEventListener('change', function () {
+            if (this.value == 'recenzja') {
+                document.getElementById('ratingInput').required = true;
+                document.getElementById('ratingDiv').style.display = 'block';
+            } else {
+                document.getElementById('ratingInput').required = false;
+                document.getElementById('ratingDiv').style.display = 'none';
+            }
+        });
+    </script>
+}
+
+@if (User.Identity.IsAuthenticated)
+{
+    <h4>Add Review</h4>
+    <form asp-action="AddReview" method="post">
+        <input type="hidden" name="LandmarkId" value="@Model.Id" />
+        <div class="form-group" id="ratingDiv">
+            <label for="Rating">Rating:</label>
+            <input type="number" class="form-control" name="Rating" min="1" max="5" id="ratingInput" required />
+        </div>
+        <div class="form-group">
+            <label for="Text">Comment:</label>
+            <textarea class="form-control" name="Text" required></textarea>
+        </div>
+        <div class="form-group">
+            <label for="Tag">Tag:</label>
+            <select class="form-control" name="Tag" required id="tagSelect">
+                <option value="recenzja">Recenzja</option>
+                <option value="porada">Porada</option>
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit Review</button>
+    </form>
+    <script>
+        document.getElementById('tagSelect').addEventListener('change', function () {
+            if (this.value == 'recenzja') {
+                document.getElementById('ratingInput').required = true;
+                document.getElementById('ratingDiv').style.display = 'block';
+            } else {
+                document.getElementById('ratingInput').required = false;
+                document.getElementById('ratingDiv').style.display = 'none';
+            }
+        });
+    </script>
 }
 
 <h4>Reviews</h4>
+<button id="showReviews">Pokaż recenzje</button>
+<button id="showAdvice">Pokaż porady</button>
+<button id="showAll">Pokaż wszystkie</button>
 @foreach (var review in Model.Reviews)
 {
-    <div>
+    <div class="review" data-tag="@review.Tag">
         @if (review.AppUser != null)
         {
             <strong>@review.AppUser.FirstName @review.AppUser.LastName</strong>
@@ -105,10 +161,13 @@
         {
             <strong>Unknown User</strong>
         }
-
-        <p>Rating: @review.Rating</p>
+        @if (review.Tag == "recenzja")
+        {
+            <p>Rating: @review.Rating</p>
+        }
         <p>Date: @review.Date.ToString("dd-MM-yyyy HH:mm")</p>
         <p>@review.Text</p>
+        <p>Tag: @review.Tag</p>
 
         @if ((await AuthorizationService.AuthorizeAsync(User, review.Id, "CanDeleteReview")).Succeeded)
         {
@@ -118,8 +177,35 @@
                 <button type="submit">Delete Review</button>
             </form>
         }
-
-        <hr />
     </div>
 }
+<script>
+    document.getElementById('showReviews').addEventListener('click', function () {
+        var reviews = document.getElementsByClassName('review');
+        for (var i = 0; i < reviews.length; i++) {
+            if (reviews[i].getAttribute('data-tag') == 'recenzja') {
+                reviews[i].style.display = 'block';
+            } else {
+                reviews[i].style.display = 'none';
+            }
+        }
+    });
 
+    document.getElementById('showAdvice').addEventListener('click', function () {
+        var reviews = document.getElementsByClassName('review');
+        for (var i = 0; i < reviews.length; i++) {
+            if (reviews[i].getAttribute('data-tag') == 'porada') {
+                reviews[i].style.display = 'block';
+            } else {
+                reviews[i].style.display = 'none';
+            }
+        }
+    });
+
+    document.getElementById('showAll').addEventListener('click', function () {
+        var reviews = document.getElementsByClassName('review');
+        for (var i = 0; i < reviews.length; i++) {
+            reviews[i].style.display = 'block';
+        }
+    });
+</script>

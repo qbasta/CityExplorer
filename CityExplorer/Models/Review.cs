@@ -8,6 +8,7 @@ namespace CityExplorer.Models
         public string?  Text     { get; set; }
         public int      Rating   { get; set; }
         public DateTime Date     { get; set; }
+        public string?  Tag      { get; set; }
 
 
         public required string  AppUserId { get; set; }
