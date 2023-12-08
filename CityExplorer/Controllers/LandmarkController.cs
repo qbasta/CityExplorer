@@ -2,7 +2,8 @@
     using CityExplorer.Models;
     using CityExplorer.Services.Abstract;
     using CityExplorer.Services.Implementation;
-    using Microsoft.AspNetCore.Mvc;
+using CityExplorer.ViewModels;
+using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Mvc.Rendering;
     using Microsoft.EntityFrameworkCore;
     using System.Security.Claims;
@@ -188,29 +189,41 @@
                 return RedirectToAction("Details", new { id = model.LandmarkId });
             }
 
-            public IActionResult Details(int? id)
+        public IActionResult Details(int? id, int page = 1, string tag = null)
+        {
+            if (id == null || _context.Landmarks == null)
             {
-                if (id == null || _context.Landmarks == null)
-                {
-                    return NotFound();
-                }
-
-                var landmark = _context.Landmarks
-                    .Include(l => l.Country)
-                    .Include(l => l.Reviews)
-                    .ThenInclude(l => l.AppUser)// Include reviews
-                    .FirstOrDefault(m => m.Id == id);
-
-                if (landmark == null)
-                {
-                    return NotFound();
-                }
-
-                return View(landmark);
+                return NotFound();
             }
 
+            var landmark = _context.Landmarks
+                .Include(l => l.Country)
+                .Include(l => l.Reviews)
+                .ThenInclude(l => l.AppUser)// Include reviews
+                .FirstOrDefault(m => m.Id == id);
 
-            public IActionResult LandmarkList()
+            if (landmark == null)
+            {
+                return NotFound();
+            }
+
+            int pageSize = 5; // ustal liczbę recenzji na stronę
+            var reviews = landmark.Reviews.Where(r => tag == null || r.Tag == tag).Skip((page - 1) * pageSize).Take(pageSize); // pobierz odpowiednie recenzje
+
+            var model = new LandmarkDetailsViewModel
+            {
+                Landmark = landmark,
+                Reviews = reviews,
+                PageSize = pageSize,
+                CurrentPage = page,
+                TotalPages = (int)Math.Ceiling(landmark.Reviews.Count() / (double)pageSize)
+            };
+
+            return View(model);
+        }
+
+
+        public IActionResult LandmarkList()
             {
                 var data = _landmarkService.List();
                 return View(data);
