@@ -1,0 +1,84 @@
+﻿using CityExplorer.Data;
+using CityExplorer.Models;
+using CityExplorer.Services.Abstract;
+
+namespace CityExplorer.Services.Implementation
+{
+    public class UserLandmarkService : IUserLandmarkService 
+    {
+        private readonly ApplicationDbContext _context;
+
+        public UserLandmarkService(ApplicationDbContext context)
+        {
+            _context = context;
+        }
+
+        public List<Landmark> GetUserLandmarks(string userId)
+        {
+            // Tutaj dodaj logikę pobierania zabytków użytkownika na podstawie userId
+            // Przykład, zakładając, że UserLandmarks to tabela łącząca użytkownika z zabytkami
+            var userLandmarks = _context.UserLandmarks
+                .Where(ul => ul.AppUserId == userId)
+                .Select(ul => ul.Landmark)
+                .ToList();
+
+            return userLandmarks;
+        }
+
+        public bool RemoveFromUserLandmarks(string userId, int landmarkId)
+        {
+            try
+            {
+                var userLandmark = _context.UserLandmarks
+                    .FirstOrDefault(ul => ul.AppUserId == userId && ul.LandmarkId == landmarkId);
+
+                if (userLandmark != null)
+                {
+                    _context.UserLandmarks.Remove(userLandmark);
+                    _context.SaveChanges();
+                    return true;
+                }
+
+                return false;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
+
+        public bool AddToUserLandmarks(string userId, int landmarkId)
+        {
+            try
+            {
+                // Sprawdź, czy zabytek już istnieje na liście użytkownika
+                var existingUserLandmark = _context.UserLandmarks
+                    .FirstOrDefault(ul => ul.AppUserId == userId && ul.LandmarkId == landmarkId);
+
+                if (existingUserLandmark != null)
+                {
+                    // Zabytek już istnieje na liście użytkownika, nie dodawaj ponownie
+                    return false;
+                }
+
+                var userLandmark = new UserLandmark
+                {
+                    AppUserId = userId,
+                    LandmarkId = landmarkId
+                };
+
+                _context.UserLandmarks.Add(userLandmark);
+                _context.SaveChanges();
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+    }
+}
+    
+

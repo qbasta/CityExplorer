@@ -39,6 +39,8 @@ builder.Services.AddScoped<IFileService, FileService>();
 builder.Services.AddScoped<ICityService, CityService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<ILandmarkService, LandmarkService>();
+builder.Services.AddScoped<IUserLandmarkService, UserLandmarkService>();
+builder.Services.AddScoped<IUserRouteService, UserRouteService>();
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
