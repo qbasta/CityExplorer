@@ -30,4 +30,16 @@ public class Landmark : ModelBase
     public string? CategoryNames                        { get; set; }
 
     public List<Review>           Reviews               { get; set; } = new();
+
+    public double AverageRating
+    {
+        get
+        {
+            if (Reviews.Any())
+            {
+                return Math.Round(Reviews.Average(r => r.Rating), 2);
+            }
+            return 0;
+        }
+    }
 }

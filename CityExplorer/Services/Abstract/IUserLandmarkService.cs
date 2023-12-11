@@ -6,6 +6,6 @@ namespace CityExplorer.Services.Abstract
     {
         bool AddToUserLandmarks(string userId, int landmarkId);
         bool RemoveFromUserLandmarks(string userId, int landmarkId);
-        List<Landmark> GetUserLandmarks(string userId);
+        List<Landmark> GetUserLandmarks(string userId, bool includeReviews);
     }
 }

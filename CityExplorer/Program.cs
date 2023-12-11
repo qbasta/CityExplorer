@@ -5,6 +5,7 @@ using CityExplorer.Services.Abstract;
 using CityExplorer.Services.Implementation;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -34,6 +35,14 @@ builder.Services.AddAuthentication()
         facebookoptions.AppSecret = builder.Configuration.GetSection("FacebookAuthSettings")
             .GetValue<string>("AppSecret") ?? throw new NullReferenceException();
     });
+
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("CanDeleteReview", policy =>
+    policy.RequireAssertion(context =>
+        context.User.IsInRole("Admin") ||
+        context.User.FindFirstValue(ClaimTypes.NameIdentifier) == context.Resource.ToString()));
+});
 
 builder.Services.AddScoped<IFileService, FileService>();
 builder.Services.AddScoped<ICityService, CityService>();

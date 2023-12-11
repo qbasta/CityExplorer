@@ -23,7 +23,7 @@ namespace CityExplorer.Controllers
                 var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
                 // Sprawdź, czy użytkownik ma już 7 zabytków na liście
-                var userLandmarks = _userLandmarkService.GetUserLandmarks(userId);
+                var userLandmarks = _userLandmarkService.GetUserLandmarks(userId, includeReviews: true);
                 if (userLandmarks.Count >= 7)
                 {
                     return Json(new { success = false, message = "Osiągnięto maksymalną liczbę zabytków na liście." });
@@ -60,7 +60,7 @@ namespace CityExplorer.Controllers
                 if (result)
                 {
                     // Pobierz zaktualizowaną listę zabytków użytkownika
-                    var updatedUserLandmarks = _userLandmarkService.GetUserLandmarks(userId);
+                    var updatedUserLandmarks = _userLandmarkService.GetUserLandmarks(userId, includeReviews: true);
 
                     // Zaktualizuj widok HTML, przekazując zaktualizowaną listę do widoku
                     return View("UserLandmarks", updatedUserLandmarks);
@@ -125,7 +125,7 @@ namespace CityExplorer.Controllers
         public IActionResult UserLandmarks()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var userLandmarks = _userLandmarkService.GetUserLandmarks(userId);
+            var userLandmarks = _userLandmarkService.GetUserLandmarks(userId, includeReviews: true); // Provide the required argument
             return View(userLandmarks);
         }
 
