@@ -9,7 +9,11 @@ namespace CityExplorer.Services.Abstract
         bool Update(Landmark landmark);
         bool Delete(int id);
         Landmark GetById(int id);
-        LandmarkListViewModel List(string term = "", bool paging = false, int currentPage = 0, string nameFilter = "", List<int> categoryFilter = null);
+        List<string> GetUniqueCities();
+        List<string> GetUniqueCountries();
+        LandmarkListViewModel List(string term = "", bool paging = false, int currentPage = 0,
+                                   string nameFilter = "", List<int> categoryFilter = null, 
+                                   string cityFilter = "", string countryFilter = "");
         List<int> GetCategoryByLandmarkId(int landmarkId);
         
     }

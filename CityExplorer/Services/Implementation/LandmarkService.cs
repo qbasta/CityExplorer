@@ -64,7 +64,8 @@ namespace CityExplorer.Services.Implementation
             return _context.Landmarks.Find(id);
         }
 
-        public LandmarkListViewModel List(string term = "", bool paging = false, int currentPage = 0, string nameFilter = "", List<int> categoryFilter = null)
+        public LandmarkListViewModel List(string term = "", bool paging = false, int currentPage = 0, string nameFilter = "",
+                                          List<int> categoryFilter = null, string cityFilter = "", string countryFilter = "")
         {
             var data = new LandmarkListViewModel();
             var list = _context.Landmarks.Include(l => l.City).ToList();
@@ -73,6 +74,18 @@ namespace CityExplorer.Services.Implementation
             {
                 nameFilter = nameFilter.ToLower();
                 list = list.Where(l => l.Name.ToLower().Contains(nameFilter)).ToList();
+            }
+
+            if (!string.IsNullOrEmpty(cityFilter))
+            {
+                cityFilter = cityFilter.ToLower();
+                list = list.Where(l => l.City.Name.ToLower().Contains(cityFilter)).ToList();
+            }
+
+            if (!string.IsNullOrEmpty(countryFilter))
+            {
+                countryFilter = countryFilter.ToLower();
+                list = list.Where(l => l.City.Country.ToLower().Contains(countryFilter)).ToList();
             }
 
             if (categoryFilter != null && categoryFilter.Count > 0)
@@ -145,6 +158,16 @@ namespace CityExplorer.Services.Implementation
             {
                 return false;
             }
+        }
+
+        public List<string> GetUniqueCities()
+        {
+            return _context.Landmarks.Select(l => l.City.Name).Distinct().ToList();
+        }
+
+        public List<string> GetUniqueCountries()
+        {
+            return _context.Landmarks.Select(l => l.City.Country).Distinct().ToList();
         }
 
         public List<int> GetCategoryByLandmarkId(int landmarkId)

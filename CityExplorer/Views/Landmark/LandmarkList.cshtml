@@ -4,7 +4,29 @@
 
 <div class="tbl-container">
     <h2>Lista zabytków</h2>
-    <a asp-action="Add" class="btn btn-default">Dodaj zabytek</a>
+    <div class="search-container">
+        <form asp-action="LandmarkList" method="get">
+            <label for="searchTerm">Wyszukaj zabytek:</label>
+            <input type="text" name="searchTerm" id="searchTerm" value="@Model.Term" autocomplete="off" />
+            <label for="cityId">Filtruj po mieście:</label>
+            <select name="CityFilter" id="cityId">
+                <option value="">--- Wybierz miasto ---</option>
+                @foreach (var city in Model.Cities)
+                {
+                    <option value="@city">@city</option>
+                }
+            </select>
+            <label for="countryId">Filtruj po państwie:</label>
+            <select name="CountryFilter" id="countryId">
+                <option value="">--- Wybierz kraj ---</option>
+                @foreach (var country in Model.Countries)
+                {
+                    <option value="@country">@country</option>
+                }
+            </select>
+            <button type="submit">Szukaj</button>
+        </form>
+    </div>
     <table class="table">
         <thead>
         <tr>
@@ -49,6 +71,7 @@
 
     </table>
 </div>
+<a asp-action="Add" class="btn btn-default">Dodaj zabytek</a>
 
 @section Scripts{
     <script src="~/js/site.js"></script>
