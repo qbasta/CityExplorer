@@ -9,7 +9,5 @@ namespace CityExplorer.Models
 
         public int LandmarkId { get; set; }
         public Landmark Landmark { get; set; }
-
-
     }
 }

@@ -103,29 +103,31 @@ namespace CityExplorer.Services.Implementation
         {
             try
             {
-                var categoriesToDelete = _context.LandmarkCategories.Where(lc => lc.LandmarkId == model.Id && !model.Categories.Contains(lc.CategoryId)).ToList();
-                foreach(var lCategory in categoriesToDelete)
+                if (model.Categories != null)
                 {
-                    _context.LandmarkCategories.Remove(lCategory);
-                }
-                foreach(int categoryId in model.Categories)
-                {
-                    var landmarkCategory = _context.LandmarkCategories.FirstOrDefault(lc => lc.LandmarkId == model.Id && lc.CategoryId == categoryId);
-                    if(landmarkCategory == null)
+                    var categoriesToDelete = _context.LandmarkCategories.Where(lc => lc.LandmarkId == model.Id && !model.Categories.Contains(lc.CategoryId)).ToList();
+                    foreach (var lCategory in categoriesToDelete)
                     {
-                        landmarkCategory = new LandmarkCategory
-                        {
-                            LandmarkId = model.Id,
-                            CategoryId = categoryId
-                        };
-                        
+                        _context.LandmarkCategories.Remove(lCategory);
                     }
-                    _context.LandmarkCategories.Add(landmarkCategory);
+                    foreach (int categoryId in model.Categories)
+                    {
+                        var landmarkCategory = _context.LandmarkCategories.FirstOrDefault(lc => lc.LandmarkId == model.Id && lc.CategoryId == categoryId);
+                        if (landmarkCategory == null)
+                        {
+                            landmarkCategory = new LandmarkCategory
+                            {
+                                LandmarkId = model.Id,
+                                CategoryId = categoryId
+                            };
+
+                        }
+                        _context.LandmarkCategories.Add(landmarkCategory);
+                    }
                 }
                 _context.Landmarks.Update(model);
                 _context.SaveChanges();
                 return true;
-
             }
             catch (Exception ex)
             {

@@ -30,8 +30,16 @@
                         <input type="hidden" name="landmarkId" value="@item.Id" />
                         <button type="submit" class="btn btn-danger">Usuń z listy</button>
                     </form>
+
                 </td>
             </tr>
         }
     </table>
+    <form asp-action="SaveUserRoute" method="post">
+        @foreach (var item in Model)
+        {
+            <input type="hidden" name="landmarkIds" value="@item.Id" />
+        }
+        <button type="submit" class="btn btn-success">Zapisz trasę</button>
+    </form>
 </div>

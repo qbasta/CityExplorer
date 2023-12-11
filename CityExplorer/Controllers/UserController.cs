@@ -85,9 +85,41 @@ namespace CityExplorer.Controllers
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var result = _userRouteService.SaveUserRoute(userId, landmarkIds);
 
-            // Obsługa wyniku (np. zwracanie JSON z informacją o sukcesie lub błędzie)
+            if (result)
+            {
+                // Usuń zabytki z listy użytkownika po zapisaniu trasy
+                foreach (var landmarkId in landmarkIds)
+                {
+                    _userLandmarkService.RemoveFromUserLandmarks(userId, landmarkId);
+                }
+            }
 
-            return Json(new { success = result });
+            // Pobierz zaktualizowaną listę zabytków użytkownika
+            var updatedUserLandmarks = _userLandmarkService.GetUserLandmarks(userId);
+
+            // Zaktualizuj widok HTML, przekazując zaktualizowaną listę do widoku
+            return View("UserLandmarks", updatedUserLandmarks);
+        }
+
+        [HttpPost]
+        public IActionResult DeleteUserRoute(int routeId)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var result = _userRouteService.DeleteUserRoute(userId, routeId);
+
+            if (result)
+            {
+                // Pobierz zaktualizowaną listę tras użytkownika
+                var updatedUserRoutes = _userRouteService.GetUserRoutes(userId);
+
+                // Zaktualizuj widok HTML, przekazując zaktualizowaną listę do widoku
+                return View("UserRoutes", updatedUserRoutes);
+            }
+            else
+            {
+                // Obsłuż błąd, na przykład wyświetl komunikat o błędzie
+                return View("Error");
+            }
         }
 
         public IActionResult UserLandmarks()
@@ -97,6 +129,12 @@ namespace CityExplorer.Controllers
             return View(userLandmarks);
         }
 
+        public IActionResult UserRoutes()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userRoutes = _userRouteService.GetUserRoutes(userId); // Ta metoda musi być dodana do interfejsu IUserRouteService i zaimplementowana w UserRouteService
+            return View(userRoutes);
+        }
 
     }
 }
