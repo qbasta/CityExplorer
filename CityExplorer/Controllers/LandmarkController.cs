@@ -197,7 +197,7 @@ using Microsoft.AspNetCore.Mvc;
             }
 
             var landmark = _context.Landmarks
-                .Include(l => l.Country)
+                .Include(l => l.City)
                 .Include(l => l.Reviews)
                 .ThenInclude(l => l.AppUser)// Include reviews
                 .FirstOrDefault(m => m.Id == id);

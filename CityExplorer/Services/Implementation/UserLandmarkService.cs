@@ -17,7 +17,10 @@ namespace CityExplorer.Services.Implementation
         public List<Landmark> GetUserLandmarks(string userId, bool includeReviews = false)
         {
             var query = _context.UserLandmarks
-                        .Where(ul => ul.AppUserId == userId);
+
+                .Include(ul => ul.Landmark.City) // Include City objects
+                .Where(ul => ul.AppUserId == userId);
+
 
             if (includeReviews)
             {
@@ -27,7 +30,16 @@ namespace CityExplorer.Services.Implementation
 
             // Now apply the Select method
             var landmarks = query.Select(ul => ul.Landmark).ToList();
+            foreach (var landmark in landmarks)
+            {
+                var categories = _context.LandmarkCategories
+                    .Where(lc => lc.LandmarkId == landmark.Id)
+                    .Include(lc => lc.Category)
+                    .Select(lc => lc.Category.Name)
+                    .ToList();
 
+                landmark.CategoryNames = string.Join(", ", categories);
+            }
             return landmarks;
         }
 

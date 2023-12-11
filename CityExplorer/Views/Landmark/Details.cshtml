@@ -52,17 +52,17 @@
             <dd class="col-sm-10">
                 @Html.DisplayFor(model => model.Landmark.Location)
             </dd>
-            <dt class="col-sm-10">
-                @Html.DisplayNameFor(model => model.Landmark.CityId)
-            </dt>
-            <dd>
-                @Html.DisplayFor(model => model.Landmark.CityId)
-            </dd>
             <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.Landmark.Country)
+                @Html.DisplayNameFor(model => model.Landmark.City.Name)
             </dt>
             <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.Landmark.Country.Country)
+                @Html.DisplayFor(model => model.Landmark.City.Name)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Landmark.City.Country)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Landmark.City.Country)
             </dd>
             <dt class="col-sm-2">
                 @Html.DisplayNameFor(model => model.Landmark.AverageRating)

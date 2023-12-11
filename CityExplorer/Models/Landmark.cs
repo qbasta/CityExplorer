@@ -18,7 +18,7 @@ public class Landmark : ModelBase
 
     [ForeignKey("City")]
     public int CityId           { get; set; }
-    public City? Country        { get; set; }
+    public City? City        { get; set; }
     
     [NotMapped]
     public List<int>? Categories                        { get; set; }

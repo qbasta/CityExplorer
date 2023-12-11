@@ -2,6 +2,7 @@
 using CityExplorer.Models;
 using CityExplorer.Services.Abstract;
 using CityExplorer.ViewModels;
+using Microsoft.EntityFrameworkCore;
 using System.Linq;
 
 namespace CityExplorer.Services.Implementation
@@ -66,7 +67,7 @@ namespace CityExplorer.Services.Implementation
         public LandmarkListViewModel List(string term = "", bool paging = false, int currentPage = 0, string nameFilter = "", List<int> categoryFilter = null)
         {
             var data = new LandmarkListViewModel();
-            var list = _context.Landmarks.ToList();
+            var list = _context.Landmarks.Include(l => l.City).ToList();
 
             if (!string.IsNullOrEmpty(nameFilter))
             {

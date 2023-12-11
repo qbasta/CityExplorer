@@ -25,7 +25,7 @@
                 <td>@item.CategoryNames</td>
                 <td>@item.OpeningHours</td>
                 <td>@item.TourDuration</td>
-                <td>@item.CityId</td>
+                <td>@item.City?.Name</td>
 
                 <td>
                     <form asp-action="Delete" asp-route-id="@item.Id" method="post">
