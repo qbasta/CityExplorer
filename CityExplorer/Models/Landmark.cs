@@ -35,9 +35,10 @@ public class Landmark : ModelBase
     {
         get
         {
-            if (Reviews.Any())
+            var reviewRatings = Reviews.Where(r => r.Tag == "recenzja").Select(r => r.Rating);
+            if (reviewRatings.Any())
             {
-                return Math.Round(Reviews.Average(r => r.Rating), 2);
+                return Math.Round(reviewRatings.Average(), 2);
             }
             return 0;
         }

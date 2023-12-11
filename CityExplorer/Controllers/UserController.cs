@@ -95,7 +95,7 @@ namespace CityExplorer.Controllers
             }
 
             // Pobierz zaktualizowaną listę zabytków użytkownika
-            var updatedUserLandmarks = _userLandmarkService.GetUserLandmarks(userId);
+            var updatedUserLandmarks = _userLandmarkService.GetUserLandmarks(userId, includeReviews: true); // lub true, w zależności od Twoich potrzeb
 
             // Zaktualizuj widok HTML, przekazując zaktualizowaną listę do widoku
             return View("UserLandmarks", updatedUserLandmarks);

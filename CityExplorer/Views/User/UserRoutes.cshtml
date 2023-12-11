@@ -14,7 +14,6 @@
                     <th>Godziny otwarcia</th>
                     <th>Czas zwiedzania</th>
                     <th>Miasto</th>
-                    <th>Akcja</th>
                 </tr>
             </thead>
             @foreach (var landmark in route.Landmarks)
@@ -25,12 +24,7 @@
                     <td>@landmark.Landmark.CategoryNames</td>
                     <td>@landmark.Landmark.OpeningHours</td>
                     <td>@landmark.Landmark.TourDuration</td>
-                    <td>@landmark.Landmark.CityId</td>
-
-                    <td>
-                        <a asp-action="Details" asp-route-id="@landmark.Landmark.Id" class="btn btn-default">Szczegóły</a>
-                        
-                    </td>
+                    <td>@landmark.Landmark.Country</td>
                 </tr>
             }
         </table>

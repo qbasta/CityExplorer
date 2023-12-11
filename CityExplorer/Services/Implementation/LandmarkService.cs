@@ -62,13 +62,24 @@ namespace CityExplorer.Services.Implementation
         {
             return _context.Landmarks.Find(id);
         }
-        
-        public LandmarkListViewModel List(string term = "", bool paging = false, int currentPage = 0)
+
+        public LandmarkListViewModel List(string term = "", bool paging = false, int currentPage = 0, string nameFilter = "", List<int> categoryFilter = null)
         {
             var data = new LandmarkListViewModel();
             var list = _context.Landmarks.ToList();
 
-            if(!string.IsNullOrEmpty(term))
+            if (!string.IsNullOrEmpty(nameFilter))
+            {
+                nameFilter = nameFilter.ToLower();
+                list = list.Where(l => l.Name.ToLower().Contains(nameFilter)).ToList();
+            }
+
+            if (categoryFilter != null && categoryFilter.Count > 0)
+            {
+                list = list.Where(l => l.Categories.Any(c => categoryFilter.Contains(c))).ToList();
+            }
+
+            if (!string.IsNullOrEmpty(term))
             {
                 term = term.ToLower();
                 list = list.Where(l => l.Name.ToLower().StartsWith(term)).ToList();
@@ -85,7 +96,7 @@ namespace CityExplorer.Services.Implementation
                 data.TotalPages = TotalPages;
             }
 
-            foreach(var landmark in list)
+            foreach (var landmark in list)
             {
                 var categories = (from category in _context.Categories
                                   join lc in _context.LandmarkCategories
