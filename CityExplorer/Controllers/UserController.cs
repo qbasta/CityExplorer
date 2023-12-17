@@ -80,10 +80,10 @@ namespace CityExplorer.Controllers
 
 
         [HttpPost]
-        public IActionResult SaveUserRoute(List<int> landmarkIds)
+        public IActionResult SaveUserRoute(List<int> landmarkIds, string routeName)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var result = _userRouteService.SaveUserRoute(userId, landmarkIds);
+            var result = _userRouteService.SaveUserRoute(userId, landmarkIds, routeName);
 
             if (result)
             {

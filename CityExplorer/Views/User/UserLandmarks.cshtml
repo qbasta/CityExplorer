@@ -36,6 +36,7 @@
         }
     </table>
     <form asp-action="SaveUserRoute" method="post">
+        <input type="text" name="routeName" placeholder="Wpisz nazwę trasy" required />
         @foreach (var item in Model)
         {
             <input type="hidden" name="landmarkIds" value="@item.Id" />

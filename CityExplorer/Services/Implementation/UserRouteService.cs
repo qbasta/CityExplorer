@@ -14,7 +14,7 @@ namespace CityExplorer.Services.Implementation
             _context = context;
         }
 
-        public bool SaveUserRoute(string userId, List<int> landmarkIds)
+        public bool SaveUserRoute(string userId, List<int> landmarkIds, string routeName)
         {
             try
             {
@@ -24,11 +24,20 @@ namespace CityExplorer.Services.Implementation
                     return false;
                 }
 
-                var userRoute = new UserRoute
+                // Sprawdź, czy trasa o danym routeName już istnieje dla danego userId
+                var userRoute = _context.UserRoutes.FirstOrDefault(ur => ur.AppUserId == userId && ur.RouteName == routeName);
+
+                // Jeśli trasa nie istnieje, utwórz nową
+                if (userRoute == null)
                 {
-                    AppUserId = userId,
-                    AppUser = user
-                };
+                    userRoute = new UserRoute
+                    {
+                        AppUserId = userId,
+                        AppUser = user,
+                        RouteName = routeName
+                    };
+                    _context.UserRoutes.Add(userRoute);
+                }
 
                 foreach (var landmarkId in landmarkIds)
                 {
@@ -38,16 +47,21 @@ namespace CityExplorer.Services.Implementation
                         continue;
                     }
 
-                    userRoute.Landmarks.Add(new UserLandmark
+                    // Sprawdź, czy zabytek już istnieje w trasie
+                    var existingUserLandmark = userRoute.Landmarks.FirstOrDefault(ul => ul.LandmarkId == landmarkId);
+                    if (existingUserLandmark == null)
                     {
-                        LandmarkId = landmarkId,
-                        Landmark = landmark,
-                        AppUserId = userId,
-                        AppUser = user
-                    });
+                        // Jeśli zabytek nie istnieje, dodaj go do trasy
+                        userRoute.Landmarks.Add(new UserLandmark
+                        {
+                            LandmarkId = landmarkId,
+                            Landmark = landmark,
+                            AppUserId = userId,
+                            AppUser = user
+                        });
+                    }
                 }
 
-                _context.UserRoutes.Add(userRoute);
                 _context.SaveChanges();
 
                 return true;
@@ -56,8 +70,8 @@ namespace CityExplorer.Services.Implementation
             {
                 return false;
             }
-
         }
+
 
         public bool DeleteUserRoute(string userId, int routeId)
         {
