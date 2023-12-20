@@ -15,6 +15,5 @@ namespace CityExplorer.Services.Abstract
                                    string nameFilter = "", List<int> categoryFilter = null, 
                                    string cityFilter = "", string countryFilter = "");
         List<int> GetCategoryByLandmarkId(int landmarkId);
-        
     }
 }

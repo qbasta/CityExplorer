@@ -1,0 +1,44 @@
+﻿@model List<CityExplorer.Models.UserLandmarkList>
+
+<div class="tbl-container">
+    <h2>Twoje zapisane listy zabytków</h2>
+    @foreach (var list in Model)
+    {
+        <div class="saved-list">
+            <h3>@list.Name (@list.CreatedAt.ToString("dd-MM-yyyy HH:mm"))</h3>
+            <form asp-action="RemoveSavedUserList" method="post">
+                <input type="hidden" name="listId" value="@list.Id" />
+                <button type="submit" class="btn btn-danger">Usuń listę</button>
+            </form>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Zdjęcie</th>
+                        <th>Nazwa</th>
+                        <th>Kategoria</th>
+                        <th>Godziny otwarcia</th>
+                        <th>Czas zwiedzania</th>
+                        <th>Miasto</th>
+                    </tr>
+                </thead>
+                @foreach (var item in list.UserLandmarks)
+                {
+                    <tr>
+                        <td><img style="height:90px;width:90px" src="/Uploads/@item.Landmark.ImagePath" /></td>
+                        <td>@item.Landmark.Name</td>
+                        <td>@item.Landmark.CategoryNames</td>
+                        <td>@item.Landmark.OpeningHours</td>
+                        <td>@item.Landmark.TourDuration</td>
+                        <td>@item.Landmark.City?.Name</td>
+                        <td>
+                            <form asp-action="RemoveFromUserLandmarks" method="post">
+                                <input type="hidden" name="landmarkId" value="@item.LandmarkId" />
+                                <button type="submit" class="btn btn-danger">Usuń</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </table>
+        </div>
+    }
+</div>

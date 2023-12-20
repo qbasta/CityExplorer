@@ -1,12 +1,12 @@
-﻿    using CityExplorer.Data;
-    using CityExplorer.Models;
-    using CityExplorer.Services.Abstract;
-    using CityExplorer.Services.Implementation;
+﻿using CityExplorer.Data;
+using CityExplorer.Models;
+using CityExplorer.Services.Abstract;
+using CityExplorer.Services.Implementation;
 using CityExplorer.ViewModels;
 using Microsoft.AspNetCore.Mvc;
-    using Microsoft.AspNetCore.Mvc.Rendering;
-    using Microsoft.EntityFrameworkCore;
-    using System.Security.Claims;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
     namespace CityExplorer.Controllers
     {
@@ -16,17 +16,14 @@ using Microsoft.AspNetCore.Mvc;
             private readonly ICategoryService _categoryService;
             private readonly ICityService _cityService;
             private readonly IFileService _fileService;
-            private readonly IUserLandmarkService _userLandmarkService;
-            //private readonly IReviewService _reviewService;
             private readonly ApplicationDbContext _context;
 
-            public LandmarkController(ILandmarkService landmarkService, ICategoryService categoryService, ICityService cityService, IFileService fileService, IUserLandmarkService userLandmarkService ,ApplicationDbContext context)
+            public LandmarkController(ILandmarkService landmarkService, ICategoryService categoryService, ICityService cityService, IFileService fileService, ApplicationDbContext context)
             {
                 _landmarkService = landmarkService;
                 _categoryService = categoryService;
                 _cityService = cityService;
                 _fileService = fileService;
-                _userLandmarkService = userLandmarkService;
                 _context = context;
             }
 
@@ -223,22 +220,16 @@ using Microsoft.AspNetCore.Mvc;
             }
 
 
-        public IActionResult LandmarkList(string searchTerm, string cityFilter, string countryFilter)
-        {
-            var cities = _landmarkService.GetUniqueCities();
-            var countries = _landmarkService.GetUniqueCountries();
-            var data = _landmarkService.List(term: searchTerm, cityFilter: cityFilter, countryFilter: countryFilter);
-            data.Cities = cities;
-            data.Countries = countries;
-            return View(data);
-        }
+            public IActionResult LandmarkList(string searchTerm, string cityFilter, string countryFilter)
+            {
+                var cities = _landmarkService.GetUniqueCities();
+                var countries = _landmarkService.GetUniqueCountries();
+                var data = _landmarkService.List(term: searchTerm, cityFilter: cityFilter, countryFilter: countryFilter);
+                data.Cities = cities;
+                data.Countries = countries;
+                return View(data);
+            }
 
-        public IActionResult UserLandmarks()
-            {   
-                    var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                    var userLandmarks = _userLandmarkService.GetUserLandmarks(userId, includeReviews: true);
-                    return View(userLandmarks);
-                }
 
             public IActionResult Delete(int id)
             {

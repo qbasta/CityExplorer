@@ -9,11 +9,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace CityExplorer.Data.Migrations
+namespace CityExplorer.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20231207164951_Taghelpers")]
-    partial class Taghelpers
+    [Migration("20231220123550_DatabaseRebuild")]
+    partial class DatabaseRebuild
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -232,52 +232,6 @@ namespace CityExplorer.Data.Migrations
                     b.ToTable("Reviews");
                 });
 
-            modelBuilder.Entity("CityExplorer.Models.UserLandmark", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("AppUserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("LandmarkId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("UserRouteId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AppUserId");
-
-                    b.HasIndex("LandmarkId");
-
-                    b.HasIndex("UserRouteId");
-
-                    b.ToTable("UserLandmarks");
-                });
-
-            modelBuilder.Entity("CityExplorer.Models.UserRoute", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("AppUserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AppUserId");
-
-                    b.ToTable("UserRoutes");
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
                     b.Property<string>("Id")
@@ -413,13 +367,13 @@ namespace CityExplorer.Data.Migrations
 
             modelBuilder.Entity("CityExplorer.Models.Landmark", b =>
                 {
-                    b.HasOne("CityExplorer.Models.City", "Country")
+                    b.HasOne("CityExplorer.Models.City", "City")
                         .WithMany("Landmarks")
                         .HasForeignKey("CityId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Country");
+                    b.Navigation("City");
                 });
 
             modelBuilder.Entity("CityExplorer.Models.LandmarkCategory", b =>
@@ -458,36 +412,6 @@ namespace CityExplorer.Data.Migrations
                     b.Navigation("AppUser");
 
                     b.Navigation("Landmark");
-                });
-
-            modelBuilder.Entity("CityExplorer.Models.UserLandmark", b =>
-                {
-                    b.HasOne("CityExplorer.Models.AppUser", "AppUser")
-                        .WithMany()
-                        .HasForeignKey("AppUserId");
-
-                    b.HasOne("CityExplorer.Models.Landmark", "Landmark")
-                        .WithMany()
-                        .HasForeignKey("LandmarkId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("CityExplorer.Models.UserRoute", null)
-                        .WithMany("Landmarks")
-                        .HasForeignKey("UserRouteId");
-
-                    b.Navigation("AppUser");
-
-                    b.Navigation("Landmark");
-                });
-
-            modelBuilder.Entity("CityExplorer.Models.UserRoute", b =>
-                {
-                    b.HasOne("CityExplorer.Models.AppUser", "AppUser")
-                        .WithMany()
-                        .HasForeignKey("AppUserId");
-
-                    b.Navigation("AppUser");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -559,11 +483,6 @@ namespace CityExplorer.Data.Migrations
             modelBuilder.Entity("CityExplorer.Models.Landmark", b =>
                 {
                     b.Navigation("Reviews");
-                });
-
-            modelBuilder.Entity("CityExplorer.Models.UserRoute", b =>
-                {
-                    b.Navigation("Landmarks");
                 });
 #pragma warning restore 612, 618
         }

@@ -1,0 +1,41 @@
+﻿@model CityExplorer.Models.UserLandmarkList
+
+<div class="tbl-container">
+    <h2>Twoja prywatna lista zabytków</h2>
+    <form asp-action="SaveUserList" method="post">
+        <div class="form-group">
+            <label for="listName">Nazwa listy:</label>
+            <input type="text" class="form-control" id="listName" name="name" required>
+        </div>
+        <button type="submit" class="btn btn-default">Zapisz listę</button>
+    </form>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Zdjęcie</th>
+                <th>Nazwa</th>
+                <th>Kategoria</th>
+                <th>Godziny otwarcia</th>
+                <th>Czas zwiedzania</th>
+                <th>Miasto</th>
+                <th>Akcja</th>
+            </tr>
+        </thead>
+        @foreach (var item in Model.UserLandmarks)
+        {
+            <tr>
+                <td><img style="height:90px;width:90px" src="/Uploads/@item.Landmark.ImagePath" /></td>
+                <td>@item.Landmark.Name</td>
+                <td>@item.Landmark.CategoryNames</td>
+                <td>@item.Landmark.OpeningHours</td>
+                <td>@item.Landmark.TourDuration</td>
+                <td>@item.Landmark.City?.Name</td>
+                <td>
+                    <form asp-action="RemoveFromUserLandmarks" asp-route-id="@item.LandmarkId" method="post">
+                        <button type="submit" class="btn btn-default">Usuń</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </table>
+</div>

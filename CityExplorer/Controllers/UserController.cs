@@ -6,135 +6,89 @@ namespace CityExplorer.Controllers
 {
     public class UserController : Controller
     {
-        private readonly IUserLandmarkService _userLandmarkService;
-        private readonly IUserRouteService _userRouteService;
+        private readonly IUserLandmarkListService _userLandmarkListService;
 
-        public UserController(IUserLandmarkService userLandmarkService, IUserRouteService userRouteService)
+        public UserController(IUserLandmarkListService userLandmarkListService)
         {
-            _userLandmarkService = userLandmarkService;
-            _userRouteService = userRouteService;
+            _userLandmarkListService = userLandmarkListService;
         }
 
         [HttpPost]
         public IActionResult AddToUserLandmarks(int landmarkId)
         {
-            try
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var success = _userLandmarkListService.AddToUserList(userId, landmarkId);
+
+            return Json(new { success });
+        }
+
+        [HttpPost]
+        public IActionResult SaveUserList(string name)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var success = _userLandmarkListService.SaveUserList(userId, name);
+
+            if (success)
             {
-                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-                // Sprawdź, czy użytkownik ma już 7 zabytków na liście
-                var userLandmarks = _userLandmarkService.GetUserLandmarks(userId, includeReviews: true);
-                if (userLandmarks.Count >= 7)
-                {
-                    return Json(new { success = false, message = "Osiągnięto maksymalną liczbę zabytków na liście." });
-                }
-
-                // Dodaj zabytek do listy użytkownika
-                var result = _userLandmarkService.AddToUserLandmarks(userId, landmarkId);
-
-                if (result)
-                {
-                    return Json(new { success = true });
-                }
-                else
-                {
-                    return Json(new { success = false, message = "Nie udało się dodać zabytku do listy użytkownika." });
-                }
+                return RedirectToAction("SavedUserLists");
             }
-            catch (Exception ex)
+            else
             {
-                // Zaloguj wyjątek
-                Console.WriteLine(ex.Message);
-                return Json(new { success = false, message = "Wystąpił błąd serwera." });
+                // Obsłuż błąd zapisu tutaj
+                return View("Error");
             }
         }
 
         [HttpPost]
         public IActionResult RemoveFromUserLandmarks(int landmarkId)
         {
-            try
-            {
-                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                var result = _userLandmarkService.RemoveFromUserLandmarks(userId, landmarkId);
-
-                if (result)
-                {
-                    // Pobierz zaktualizowaną listę zabytków użytkownika
-                    var updatedUserLandmarks = _userLandmarkService.GetUserLandmarks(userId, includeReviews: true);
-
-                    // Zaktualizuj widok HTML, przekazując zaktualizowaną listę do widoku
-                    return View("UserLandmarks", updatedUserLandmarks);
-                }
-                else
-                {
-                    return Json(new { success = false, message = "Nie udało się usunąć zabytku z listy użytkownika." });
-                }
-            }
-            catch (Exception ex)
-            {
-                // Zaloguj wyjątek
-                Console.WriteLine(ex.Message);
-                return Json(new { success = false, message = "Wystąpił błąd serwera." });
-            }
-        }
-
-
-        [HttpPost]
-        public IActionResult SaveUserRoute(List<int> landmarkIds, string routeName)
-        {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var result = _userRouteService.SaveUserRoute(userId, landmarkIds, routeName);
+            var result = _userLandmarkListService.RemoveFromUserList(userId, landmarkId);
 
-            if (result)
+            if (result == null)
             {
-                // Usuń zabytki z listy użytkownika po zapisaniu trasy
-                foreach (var landmarkId in landmarkIds)
-                {
-                    _userLandmarkService.RemoveFromUserLandmarks(userId, landmarkId);
-                }
+                return Json(new { success = false, message = "Zabytek nie istnieje na liście użytkownika." });
+            }
+            else if (!result.Value)
+            {
+                return Json(new { success = false, message = "Nie udało się usunąć zabytku." });
             }
 
-            // Pobierz zaktualizowaną listę zabytków użytkownika
-            var updatedUserLandmarks = _userLandmarkService.GetUserLandmarks(userId, includeReviews: true); // lub true, w zależności od Twoich potrzeb
-
-            // Zaktualizuj widok HTML, przekazując zaktualizowaną listę do widoku
-            return View("UserLandmarks", updatedUserLandmarks);
+            return Json(new { success = true });
         }
 
         [HttpPost]
-        public IActionResult DeleteUserRoute(int routeId)
+        public IActionResult RemoveSavedUserList(int listId)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var result = _userRouteService.DeleteUserRoute(userId, routeId);
+            var result = _userLandmarkListService.RemoveSavedUserList(userId, listId);
 
-            if (result)
+            if (result == null)
             {
-                // Pobierz zaktualizowaną listę tras użytkownika
-                var updatedUserRoutes = _userRouteService.GetUserRoutes(userId);
-
-                // Zaktualizuj widok HTML, przekazując zaktualizowaną listę do widoku
-                return View("UserRoutes", updatedUserRoutes);
+                return Json(new { success = false, message = "Lista nie istnieje." });
             }
-            else
+            else if (!result.Value)
             {
-                // Obsłuż błąd, na przykład wyświetl komunikat o błędzie
-                return View("Error");
+                return Json(new { success = false, message = "Nie udało się usunąć listy." });
             }
+
+            return RedirectToAction("SavedUserLists");
         }
 
-        public IActionResult UserLandmarks()
+        public IActionResult UserList()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var userLandmarks = _userLandmarkService.GetUserLandmarks(userId, includeReviews: true); // Provide the required argument
-            return View(userLandmarks);
+            var userList = _userLandmarkListService.GetUserList(userId);
+
+            return View(userList);
         }
 
-        public IActionResult UserRoutes()
+        public IActionResult SavedUserLists()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var userRoutes = _userRouteService.GetUserRoutes(userId); // Ta metoda musi być dodana do interfejsu IUserRouteService i zaimplementowana w UserRouteService
-            return View(userRoutes);
-        }
+            var savedUserLists = _userLandmarkListService.GetSavedUserLists(userId);
 
+            return View(savedUserLists);
+        }
     }
 }

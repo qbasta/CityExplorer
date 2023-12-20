@@ -9,18 +9,18 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace CityExplorer.Data.Migrations
+namespace CityExplorer.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20231013124809_CustomIdentity")]
-    partial class CustomIdentity
+    [Migration("20231220134129_PrivateLandmarkList")]
+    partial class PrivateLandmarkList
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.7")
+                .HasAnnotation("ProductVersion", "7.0.12")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -55,6 +55,10 @@ namespace CityExplorer.Data.Migrations
 
                     b.Property<DateTimeOffset?>("LockoutEnd")
                         .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("Login")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("NormalizedEmail")
                         .HasMaxLength(256)
@@ -97,6 +101,175 @@ namespace CityExplorer.Data.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
+                });
+
+            modelBuilder.Entity("CityExplorer.Models.Category", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Categories");
+                });
+
+            modelBuilder.Entity("CityExplorer.Models.City", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Country")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Cities");
+                });
+
+            modelBuilder.Entity("CityExplorer.Models.Landmark", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CityId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ImagePath")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Location")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("OpeningHours")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TourDuration")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CityId");
+
+                    b.ToTable("Landmarks");
+                });
+
+            modelBuilder.Entity("CityExplorer.Models.LandmarkCategory", b =>
+                {
+                    b.Property<int>("LandmarkId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("CategoryId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Id")
+                        .HasColumnType("int");
+
+                    b.HasKey("LandmarkId", "CategoryId");
+
+                    b.HasIndex("CategoryId");
+
+                    b.ToTable("LandmarkCategories");
+                });
+
+            modelBuilder.Entity("CityExplorer.Models.Review", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("AppUserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("LandmarkId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Rating")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Tag")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Text")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AppUserId");
+
+                    b.HasIndex("LandmarkId");
+
+                    b.ToTable("Reviews");
+                });
+
+            modelBuilder.Entity("CityExplorer.Models.UserLandmark", b =>
+                {
+                    b.Property<int>("LandmarkId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UserLandmarkListId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Id")
+                        .HasColumnType("int");
+
+                    b.HasKey("LandmarkId", "UserLandmarkListId");
+
+                    b.HasIndex("UserLandmarkListId");
+
+                    b.ToTable("UserLandmarks");
+                });
+
+            modelBuilder.Entity("CityExplorer.Models.UserLandmarkList", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("AppUserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<bool>("IsSaved")
+                        .HasColumnType("bit");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AppUserId");
+
+                    b.ToTable("UserLandmarkLists");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -232,6 +405,85 @@ namespace CityExplorer.Data.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("CityExplorer.Models.Landmark", b =>
+                {
+                    b.HasOne("CityExplorer.Models.City", "City")
+                        .WithMany("Landmarks")
+                        .HasForeignKey("CityId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("City");
+                });
+
+            modelBuilder.Entity("CityExplorer.Models.LandmarkCategory", b =>
+                {
+                    b.HasOne("CityExplorer.Models.Category", "Category")
+                        .WithMany("LandmarkCategories")
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("CityExplorer.Models.Landmark", "Landmark")
+                        .WithMany()
+                        .HasForeignKey("LandmarkId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Category");
+
+                    b.Navigation("Landmark");
+                });
+
+            modelBuilder.Entity("CityExplorer.Models.Review", b =>
+                {
+                    b.HasOne("CityExplorer.Models.AppUser", "AppUser")
+                        .WithMany("Reviews")
+                        .HasForeignKey("AppUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("CityExplorer.Models.Landmark", "Landmark")
+                        .WithMany("Reviews")
+                        .HasForeignKey("LandmarkId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("AppUser");
+
+                    b.Navigation("Landmark");
+                });
+
+            modelBuilder.Entity("CityExplorer.Models.UserLandmark", b =>
+                {
+                    b.HasOne("CityExplorer.Models.Landmark", "Landmark")
+                        .WithMany()
+                        .HasForeignKey("LandmarkId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("CityExplorer.Models.UserLandmarkList", "UserLandmarkList")
+                        .WithMany("UserLandmarks")
+                        .HasForeignKey("UserLandmarkListId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Landmark");
+
+                    b.Navigation("UserLandmarkList");
+                });
+
+            modelBuilder.Entity("CityExplorer.Models.UserLandmarkList", b =>
+                {
+                    b.HasOne("CityExplorer.Models.AppUser", "AppUser")
+                        .WithMany()
+                        .HasForeignKey("AppUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("AppUser");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -281,6 +533,31 @@ namespace CityExplorer.Data.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("CityExplorer.Models.AppUser", b =>
+                {
+                    b.Navigation("Reviews");
+                });
+
+            modelBuilder.Entity("CityExplorer.Models.Category", b =>
+                {
+                    b.Navigation("LandmarkCategories");
+                });
+
+            modelBuilder.Entity("CityExplorer.Models.City", b =>
+                {
+                    b.Navigation("Landmarks");
+                });
+
+            modelBuilder.Entity("CityExplorer.Models.Landmark", b =>
+                {
+                    b.Navigation("Reviews");
+                });
+
+            modelBuilder.Entity("CityExplorer.Models.UserLandmarkList", b =>
+                {
+                    b.Navigation("UserLandmarks");
                 });
 #pragma warning restore 612, 618
         }
