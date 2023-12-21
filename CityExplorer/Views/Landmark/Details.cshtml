@@ -2,6 +2,9 @@
 @using Microsoft.AspNetCore.Authorization;
 @model CityExplorer.ViewModels.LandmarkDetailsViewModel
 @inject IAuthorizationService AuthorizationService
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
 
 
 
@@ -46,10 +49,16 @@
                 @Html.DisplayFor(model => model.Landmark.TourDuration)
             </dd>
             <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.Landmark.Location)
+                @Html.DisplayNameFor(model => model.Landmark.Latitude)
             </dt>
             <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.Landmark.Location)
+                @Html.DisplayFor(model => model.Landmark.Latitude)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Landmark.Longitude)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Landmark.Longitude)
             </dd>
             <dt class="col-sm-2">
                 @Html.DisplayNameFor(model => model.Landmark.City.Name)
@@ -75,6 +84,8 @@
     <a asp-action="Edit" asp-route-id="@Model?.Landmark.Id">Edit</a> |
     <a asp-action="LandmarkList">Back to List</a>
 </div>
+
+<div id="mapid" style="height: 400px; width: 50%; margin: 0 auto;"></div>
 
 <h4>Reviews</h4>
 <button id="showReviews">Pokaż recenzje</button>
@@ -189,3 +200,14 @@
         }
     });
 </script>
+
+@section Scripts {
+    <script>
+        var map = L.map('mapid').setView([@Model.Landmark.Latitude, @Model.Landmark.Longitude], 13);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 30,
+        }).addTo(map);
+        L.marker([@Model.Landmark.Latitude, @Model.Landmark.Longitude]).addTo(map)
+            .bindPopup('Zabytek: @Model.Landmark.Name');
+    </script>
+}

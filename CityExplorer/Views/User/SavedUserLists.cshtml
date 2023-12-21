@@ -2,7 +2,7 @@
 
 <div class="tbl-container">
     <h2>Twoje zapisane listy zabytków</h2>
-    @foreach (var list in Model)
+    @foreach (var list in Model.OrderByDescending(l => l.CreatedAt))
     {
         <div class="saved-list">
             <h3>@list.Name (@list.CreatedAt.ToString("dd-MM-yyyy HH:mm"))</h3>

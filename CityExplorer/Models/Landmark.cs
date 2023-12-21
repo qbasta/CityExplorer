@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.Globalization;
 using CityExplorer.Models.Base;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
@@ -6,12 +7,26 @@ namespace CityExplorer.Models;
 
 public class Landmark : ModelBase
 {
+    private double _latitude;
+    private double _longitude;
+
     public string  Name         { get; set; } = "Unknown";
     public string? Description  { get; set; }
     public string? ImagePath    { get; set; }
     public string? OpeningHours { get; set; }
-    public string? TourDuration { get; set; } 
-    public string? Location     { get; set; }
+    public string? TourDuration { get; set; }
+
+    public string Latitude
+    {
+        get => _latitude.ToString(CultureInfo.InvariantCulture);
+        set => _latitude = double.Parse(value, CultureInfo.InvariantCulture);
+    }
+
+    public string Longitude
+    {
+        get => _longitude.ToString(CultureInfo.InvariantCulture);
+        set => _longitude = double.Parse(value, CultureInfo.InvariantCulture);
+    }
 
     [NotMapped]
     public IFormFile? ImageFile { get; set; }

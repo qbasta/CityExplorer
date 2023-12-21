@@ -1,4 +1,8 @@
 ﻿@model CityExplorer.Models.UserLandmarkList
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.css" />
+<script src="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.js"></script>
 
 <div class="tbl-container">
     <h2>Twoja prywatna lista zabytków</h2>
@@ -39,3 +43,36 @@
         }
     </table>
 </div>
+
+<div id="mapid" style="height: 400px; width: 50%; margin: 0 auto;"></div>
+
+@section Scripts {
+    <script>
+        var map = L.map('mapid').setView([@Model.UserLandmarks[0].Landmark.Latitude, @Model.UserLandmarks[0].Landmark.Longitude], 13);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+        }).addTo(map);
+
+        var waypoints = [];
+        @foreach (var item in Model.UserLandmarks)
+        {
+            <text>
+                            var latLng = L.latLng(@item.Landmark.Latitude, @item.Landmark.Longitude);
+            L.marker(latLng).addTo(map)
+                .bindPopup('Zabytek: @item.Landmark.Name');
+            waypoints.push(latLng);
+            </text>
+        }
+
+                var control = L.Routing.control({
+            waypoints: waypoints,
+            routeWhileDragging: true,
+            router: L.Routing.osrmv1({
+                serviceUrl: 'https://router.project-osrm.org/route/v1',
+                profile: 'foot',  // Używamy profilu 'foot' dla tras pieszych
+            }),
+            show: false,  // Ukrywamy szczegółowe instrukcje dotarcia
+        }).addTo(map);
+    </script>
+}
+

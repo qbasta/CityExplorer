@@ -108,6 +108,7 @@ namespace CityExplorer.Services.Implementation
             {
                 userLandmarkList.IsSaved = true;
                 userLandmarkList.Name = name;
+                userLandmarkList.CreatedAt = DateTime.Now;
                 _context.SaveChanges();
             }
 
