@@ -74,6 +74,30 @@ namespace CityExplorer.Controllers
 
             return RedirectToAction("SavedUserLists");
         }
+        
+        [HttpPost]
+        public IActionResult MakeUserListPublic(int listId)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var success = _userLandmarkListService.MakeListPublic(userId, listId);
+
+            if (success)
+            {
+                return RedirectToAction("SavedUserLists");
+            }
+            else
+            {
+                // Obsłuż błąd tutaj
+                return View("Error");
+            }
+        }
+
+        public IActionResult PublicUserLists()
+        {
+            var publicUserLists = _userLandmarkListService.GetPublicUserLists();
+
+            return View(publicUserLists);
+        }
 
         public IActionResult UserList()
         {

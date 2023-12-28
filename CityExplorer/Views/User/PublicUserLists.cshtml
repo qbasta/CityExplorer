@@ -1,15 +1,12 @@
 ﻿@model List<CityExplorer.Models.UserLandmarkList>
 
 <div class="tbl-container">
-    <h2>Twoje zapisane listy zabytków</h2>
+    <h2>Publiczne listy zabytków</h2>
     @foreach (var list in Model.OrderByDescending(l => l.CreatedAt))
     {
-        <div class="saved-list">
+        <div class="public-list">
             <h3>@list.Name (@list.CreatedAt.ToString("dd-MM-yyyy HH:mm"))</h3>
-            <form asp-action="RemoveSavedUserList" method="post">
-                <input type="hidden" name="listId" value="@list.Id" />
-                <button type="submit" class="btn btn-danger">Usuń listę</button>
-            </form>
+            
             <table class="table">
                 <thead>
                     <tr>
@@ -30,19 +27,9 @@
                         <td>@item.Landmark.OpeningHours</td>
                         <td>@item.Landmark.TourDuration</td>
                         <td>@item.Landmark.City?.Name</td>
-                        <td>
-                            <form asp-action="RemoveFromUserLandmarks" method="post">
-                                <input type="hidden" name="landmarkId" value="@item.LandmarkId" />
-                                <button type="submit" class="btn btn-danger">Usuń</button>
-                            </form>
-                        </td>
                     </tr>
                 }
             </table>
-            <form asp-action="MakeUserListPublic" method="post">
-                <input type="hidden" name="listId" value="@list.Id" />
-                <button type="submit" class="btn btn-primary">Udostępnij listę</button>
-            </form>
         </div>
     }
 </div>

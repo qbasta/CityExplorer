@@ -6,73 +6,81 @@
 
 <div class="tbl-container">
     <h2>Twoja prywatna lista zabytków</h2>
-    <form asp-action="SaveUserList" method="post">
-        <div class="form-group">
-            <label for="listName">Nazwa listy:</label>
-            <input type="text" class="form-control" id="listName" name="name" required>
-        </div>
-        <button type="submit" class="btn btn-default">Zapisz listę</button>
-    </form>
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Zdjęcie</th>
-                <th>Nazwa</th>
-                <th>Kategoria</th>
-                <th>Godziny otwarcia</th>
-                <th>Czas zwiedzania</th>
-                <th>Miasto</th>
-                <th>Akcja</th>
-            </tr>
-        </thead>
-        @foreach (var item in Model.UserLandmarks)
-        {
-            <tr>
-                <td><img style="height:90px;width:90px" src="/Uploads/@item.Landmark.ImagePath" /></td>
-                <td>@item.Landmark.Name</td>
-                <td>@item.Landmark.CategoryNames</td>
-                <td>@item.Landmark.OpeningHours</td>
-                <td>@item.Landmark.TourDuration</td>
-                <td>@item.Landmark.City?.Name</td>
-                <td>
-                    <form asp-action="RemoveFromUserLandmarks" asp-route-id="@item.LandmarkId" method="post">
-                        <button type="submit" class="btn btn-default">Usuń</button>
-                    </form>
-                </td>
-            </tr>
-        }
-    </table>
+    @if (Model.UserLandmarks.Count == 0)
+    {
+        <footer>Twoja lista jest pusta. Dodaj zabytek, aby rozpocząć!</footer>
+    }
+    else
+    {
+        <form asp-action="SaveUserList" method="post">
+            <div class="form-group">
+                <label for="listName">Nazwa listy:</label>
+                <input type="text" class="form-control" id="listName" name="name" required>
+            </div>
+            <button type="submit" class="btn btn-default">Zapisz listę</button>
+        </form>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Zdjęcie</th>
+                    <th>Nazwa</th>
+                    <th>Kategoria</th>
+                    <th>Godziny otwarcia</th>
+                    <th>Czas zwiedzania</th>
+                    <th>Miasto</th>
+                    <th>Akcja</th>
+                </tr>
+            </thead>
+            @foreach (var item in Model.UserLandmarks)
+            {
+                <tr>
+                    <td><img style="height:90px;width:90px" src="/Uploads/@item.Landmark.ImagePath" /></td>
+                    <td>@item.Landmark.Name</td>
+                    <td>@item.Landmark.CategoryNames</td>
+                    <td>@item.Landmark.OpeningHours</td>
+                    <td>@item.Landmark.TourDuration</td>
+                    <td>@item.Landmark.City?.Name</td>
+                    <td>
+                        <form asp-action="RemoveFromUserLandmarks" asp-route-id="@item.LandmarkId" method="post">
+                            <button type="submit" class="btn btn-default">Usuń</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </table>
+        <div id="mapid" style="height: 400px; width: 50%; margin: 0 auto;"></div>
+    }
 </div>
-
-<div id="mapid" style="height: 400px; width: 50%; margin: 0 auto;"></div>
 
 @section Scripts {
     <script>
-        var map = L.map('mapid').setView([@Model.UserLandmarks[0].Landmark.Latitude, @Model.UserLandmarks[0].Landmark.Longitude], 13);
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            maxZoom: 19,
-        }).addTo(map);
-
-        var waypoints = [];
-        @foreach (var item in Model.UserLandmarks)
+        @if (Model.UserLandmarks.Count > 0)
         {
             <text>
-                            var latLng = L.latLng(@item.Landmark.Latitude, @item.Landmark.Longitude);
-            L.marker(latLng).addTo(map)
-                .bindPopup('Zabytek: @item.Landmark.Name');
-            waypoints.push(latLng);
+                                    var map = L.map('mapid').setView([@Model.UserLandmarks[0].Landmark.Latitude, @Model.UserLandmarks[0].Landmark.Longitude], 13);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 19,
+            }).addTo(map);
+            var waypoints = [];
+                @foreach (var item in Model.UserLandmarks)
+                {
+                    <text>
+                                                var latLng = L.latLng(@item.Landmark.Latitude, @item.Landmark.Longitude);
+                L.marker(latLng).addTo(map)
+                    .bindPopup('Zabytek: @item.Landmark.Name');
+                waypoints.push(latLng);
+                    </text>
+                }
+                                    var control = L.Routing.control({
+                waypoints: waypoints,
+                routeWhileDragging: true,
+                router: L.Routing.osrmv1({
+                    serviceUrl: 'https://router.project-osrm.org/route/v1',
+                    profile: 'foot',  // Używamy profilu 'foot' dla tras pieszych
+                }),
+                show: true,  // Ukrywamy szczegółowe instrukcje dotarcia
+            }).addTo(map);
             </text>
         }
-
-                var control = L.Routing.control({
-            waypoints: waypoints,
-            routeWhileDragging: true,
-            router: L.Routing.osrmv1({
-                serviceUrl: 'https://router.project-osrm.org/route/v1',
-                profile: 'foot',  // Używamy profilu 'foot' dla tras pieszych
-            }),
-            show: false,  // Ukrywamy szczegółowe instrukcje dotarcia
-        }).addTo(map);
     </script>
 }
-

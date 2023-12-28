@@ -113,11 +113,35 @@ namespace CityExplorer.Services.Implementation
             }
 
             // Tworzenie nowej listy prywatnej
-            var newUserLandmarkList = new UserLandmarkList { AppUserId = userId, Name = "Domyślna nazwa" };
+            var newUserLandmarkList = new UserLandmarkList { AppUserId = userId, Name = "Domyślna nazwa", IsPublic = false };
             _context.UserLandmarkLists.Add(newUserLandmarkList);
             _context.SaveChanges();
 
             return true;
+        }
+        
+        public bool MakeListPublic(string userId, int listId)
+        {
+            var userLandmarkList = _context.UserLandmarkLists
+                .FirstOrDefault(ull => ull.AppUserId == userId && ull.Id == listId);
+
+            if (userLandmarkList != null)
+            {
+                userLandmarkList.IsPublic = true;
+                _context.SaveChanges();
+                return true;
+            }
+
+            return false;
+        }
+
+        public List<UserLandmarkList> GetPublicUserLists()
+        {
+            return _context.UserLandmarkLists
+                .Include(ull => ull.UserLandmarks)
+                .ThenInclude(ul => ul.Landmark)
+                .Where(ull => ull.IsPublic && ull.IsSaved)
+                .ToList();
         }
 
         public UserLandmarkList GetUserList(string userId)

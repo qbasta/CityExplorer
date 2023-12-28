@@ -8,6 +8,7 @@ namespace CityExplorer.Models
         public AppUser AppUser { get; set; }
 
         public bool IsSaved { get; set; } = false;
+        public bool IsPublic { get; set; } = false;
         public List<UserLandmark> UserLandmarks { get; set; } = new();
 
         public string Name { get; set; } = "Domyślna nazwa";
