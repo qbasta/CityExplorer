@@ -188,6 +188,30 @@ namespace CityExplorer.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "UserLandmarkLists",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    AppUserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    IsSaved = table.Column<bool>(type: "bit", nullable: false),
+                    IsPublic = table.Column<bool>(type: "bit", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    SharedBy = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserLandmarkLists", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_UserLandmarkLists_AspNetUsers_AppUserId",
+                        column: x => x.AppUserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Landmarks",
                 columns: table => new
                 {
@@ -198,7 +222,8 @@ namespace CityExplorer.Migrations
                     ImagePath = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     OpeningHours = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     TourDuration = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Location = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Latitude = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Longitude = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CityId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -267,6 +292,31 @@ namespace CityExplorer.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "UserLandmarks",
+                columns: table => new
+                {
+                    LandmarkId = table.Column<int>(type: "int", nullable: false),
+                    UserLandmarkListId = table.Column<int>(type: "int", nullable: false),
+                    Id = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserLandmarks", x => new { x.LandmarkId, x.UserLandmarkListId });
+                    table.ForeignKey(
+                        name: "FK_UserLandmarks_Landmarks_LandmarkId",
+                        column: x => x.LandmarkId,
+                        principalTable: "Landmarks",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_UserLandmarks_UserLandmarkLists_UserLandmarkListId",
+                        column: x => x.UserLandmarkListId,
+                        principalTable: "UserLandmarkLists",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
@@ -325,6 +375,16 @@ namespace CityExplorer.Migrations
                 name: "IX_Reviews_LandmarkId",
                 table: "Reviews",
                 column: "LandmarkId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserLandmarkLists_AppUserId",
+                table: "UserLandmarkLists",
+                column: "AppUserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserLandmarks_UserLandmarkListId",
+                table: "UserLandmarks",
+                column: "UserLandmarkListId");
         }
 
         /// <inheritdoc />
@@ -352,19 +412,25 @@ namespace CityExplorer.Migrations
                 name: "Reviews");
 
             migrationBuilder.DropTable(
+                name: "UserLandmarks");
+
+            migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
                 name: "Categories");
 
             migrationBuilder.DropTable(
-                name: "AspNetUsers");
-
-            migrationBuilder.DropTable(
                 name: "Landmarks");
 
             migrationBuilder.DropTable(
+                name: "UserLandmarkLists");
+
+            migrationBuilder.DropTable(
                 name: "Cities");
+
+            migrationBuilder.DropTable(
+                name: "AspNetUsers");
         }
     }
 }

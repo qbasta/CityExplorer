@@ -16,13 +16,14 @@ namespace CityExplorer.Services.Implementation
 
         public bool AddToUserList(string userId, int landmarkId)
         {
+            var user = _context.Users.Find(userId); // Pobierz obiekt AppUser na podstawie userId
             var userLandmarkList = _context.UserLandmarkLists
                 .Include(ull => ull.UserLandmarks)
                 .FirstOrDefault(ull => ull.AppUserId == userId && !ull.IsSaved);
 
             if (userLandmarkList == null)
             {
-                userLandmarkList = new UserLandmarkList { AppUserId = userId, Name = "Domyślna nazwa" };
+                userLandmarkList = new UserLandmarkList { AppUserId = userId, Name = "Domyślna nazwa", SharedBy = user.FirstName + " " + user.LastName };
                 _context.UserLandmarkLists.Add(userLandmarkList);
                 _context.SaveChanges();
             }
@@ -100,6 +101,7 @@ namespace CityExplorer.Services.Implementation
 
         public bool SaveUserList(string userId, string name)
         {
+            var user = _context.Users.Find(userId); // Pobierz obiekt AppUser na podstawie userId
             var userLandmarkList = _context.UserLandmarkLists
                 .Include(ull => ull.UserLandmarks)
                 .FirstOrDefault(ull => ull.AppUserId == userId && !ull.IsSaved);
@@ -109,17 +111,18 @@ namespace CityExplorer.Services.Implementation
                 userLandmarkList.IsSaved = true;
                 userLandmarkList.Name = name;
                 userLandmarkList.CreatedAt = DateTime.Now;
+                userLandmarkList.SharedBy = user.FirstName + " " + user.LastName; // Dodajemy to pole
                 _context.SaveChanges();
             }
 
             // Tworzenie nowej listy prywatnej
-            var newUserLandmarkList = new UserLandmarkList { AppUserId = userId, Name = "Domyślna nazwa", IsPublic = false };
+            var newUserLandmarkList = new UserLandmarkList { AppUserId = userId, Name = "Domyślna nazwa", IsPublic = false, SharedBy = user.FirstName + " " + user.LastName };
             _context.UserLandmarkLists.Add(newUserLandmarkList);
             _context.SaveChanges();
 
             return true;
         }
-        
+
         public bool MakeListPublic(string userId, int listId)
         {
             var userLandmarkList = _context.UserLandmarkLists
@@ -153,6 +156,16 @@ namespace CityExplorer.Services.Implementation
 
             // Jeśli userList jest null, zwróć nową, pustą listę
             return userList ?? new UserLandmarkList { UserLandmarks = new List<UserLandmark>() };
+        }
+
+        public UserLandmarkList GetRouteDetails(string userId, int routeId)
+        {
+            var userLandmarkList = _context.UserLandmarkLists
+                .Include(ull => ull.UserLandmarks)
+                .ThenInclude(ul => ul.Landmark)
+                .FirstOrDefault(ull => ull.AppUserId == userId && ull.Id == routeId);
+
+            return userLandmarkList;
         }
 
         public List<UserLandmarkList> GetSavedUserLists(string userId)

@@ -1,7 +1,6 @@
 {
   "name": "cityexplorer",
   "version": "1.0.0",
-  "description": "",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -26,5 +25,6 @@
   "dependencies": {
     "@types/source-map": "^0.5.2",
     "leaflet": "^1.9.4"
-  }
+  },
+  "description": ""
 }

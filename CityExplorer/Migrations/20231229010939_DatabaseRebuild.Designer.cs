@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CityExplorer.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20231220145036_UserLandmarkListUpdate")]
-    partial class UserLandmarkListUpdate
+    [Migration("20231229010939_DatabaseRebuild")]
+    partial class DatabaseRebuild
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -158,7 +158,12 @@ namespace CityExplorer.Migrations
                     b.Property<string>("ImagePath")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Location")
+                    b.Property<string>("Latitude")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Longitude")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
@@ -265,10 +270,17 @@ namespace CityExplorer.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<bool>("IsPublic")
+                        .HasColumnType("bit");
+
                     b.Property<bool>("IsSaved")
                         .HasColumnType("bit");
 
                     b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SharedBy")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 

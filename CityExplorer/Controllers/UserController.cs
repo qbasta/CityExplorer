@@ -92,6 +92,20 @@ namespace CityExplorer.Controllers
             }
         }
 
+        [HttpGet]
+        public IActionResult RouteDetails(int routeId)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var route = _userLandmarkListService.GetRouteDetails(userId, routeId);
+
+            if (route == null)
+            {
+                return View("Error");
+            }
+
+            return View(route);
+        }
+
         public IActionResult PublicUserLists()
         {
             var publicUserLists = _userLandmarkListService.GetPublicUserLists();

@@ -10,6 +10,7 @@ namespace CityExplorer.Services.Abstract
         bool? RemoveFromUserList(string userId, int landmarkId);
         bool? RemoveSavedUserList(string userId, int listId);
         UserLandmarkList GetUserList(string userId);
+        UserLandmarkList GetRouteDetails(string userId, int routeId);
         List<UserLandmarkList> GetSavedUserLists(string userId);
         List<UserLandmarkList> GetPublicUserLists();
     }

@@ -1,4 +1,6 @@
-﻿@model List<CityExplorer.Models.UserLandmarkList>
+﻿@using Microsoft.AspNetCore.Identity;
+@model List<CityExplorer.Models.UserLandmarkList>
+@inject UserManager<AppUser> UserManager
 
 <div class="tbl-container">
     <h2>Publiczne listy zabytków</h2>
@@ -6,16 +8,14 @@
     {
         <div class="public-list">
             <h3>@list.Name (@list.CreatedAt.ToString("dd-MM-yyyy HH:mm"))</h3>
-            
+            <p>Udostępnione przez: @list.SharedBy</p>
+
+            <a asp-action="RouteDetails" asp-route-id="@list.Id" class="btn btn-default">Szczegóły</a>
             <table class="table">
                 <thead>
                     <tr>
                         <th>Zdjęcie</th>
                         <th>Nazwa</th>
-                        <th>Kategoria</th>
-                        <th>Godziny otwarcia</th>
-                        <th>Czas zwiedzania</th>
-                        <th>Miasto</th>
                     </tr>
                 </thead>
                 @foreach (var item in list.UserLandmarks)
@@ -23,13 +23,10 @@
                     <tr>
                         <td><img style="height:90px;width:90px" src="/Uploads/@item.Landmark.ImagePath" /></td>
                         <td>@item.Landmark.Name</td>
-                        <td>@item.Landmark.CategoryNames</td>
-                        <td>@item.Landmark.OpeningHours</td>
-                        <td>@item.Landmark.TourDuration</td>
-                        <td>@item.Landmark.City?.Name</td>
                     </tr>
                 }
             </table>
         </div>
     }
 </div>
+
