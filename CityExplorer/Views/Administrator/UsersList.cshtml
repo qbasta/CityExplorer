@@ -1,41 +1,45 @@
 ﻿@model IEnumerable<AppUser>
+<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+<link rel="stylesheet" href="~/css/styles.css" asp-append-version="true" />
 
-<h1>USERS LIST</h1>
-
+<button onclick="location.href='@Url.Action("Index", "Administrator")'" class="btn-blue" style="width:auto">Cofnij</button>
+<br />
+<hr />
+<br />
 @if (Model.Any())
 {
-    <div class="card mb-3">
-        <div class="card-header">List of Existing Users</div>
-        <div class="card-body">
-            <table class="table table-bordered">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Name and Surname</th>
-                        <th>Username</th>
-                        <th>Email</th>
-                        <th>Actions</th>
+    <div class="flex justify-center">
+        <div class="w-full max-w-max mt-8">
+            <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+                <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                    <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                        <tr class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
+                        <th class="py-2 px-4">ID</th>
+                        <th class="py-2 px-4">Name and Surname</th>
+                        <th class="py-2 px-4">Username</th>
+                        <th class="py-2 px-4">Email</th>
+                        <th class="py-2 px-4">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach (var user in Model)
                     {
-                        <tr>
-                            <td>@user.Id</td>
-                            <td>@(user.FirstName + " " + user.LastName)</td>
-                            <td>@user.UserName</td>
-                            <td>@user.Email</td>
-                            <td>
+                        <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                            <td class="px-4 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">@user.Id</td>
+                            <td class="px-4 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">@(user.FirstName + " " + user.LastName)</td>
+                            <td class="px-4 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">@user.UserName</td>
+                            <td class="px-4 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">@user.Email</td>
+                            <td class="px-4 py-2 text-center">
                                 <form asp-action="DeleteUser" asp-route-id="@user.Id" method="post">
-                                <a asp-action="EditUser" asp-controller="Administrator" asp-route-id="@user.Id" class="btn btn-primary">Edit User</a>
+                                <button asp-action="EditUser" asp-controller="Administrator" asp-route-id="@user.Id" class="btn-green">Edytuj użytkownika</button>
                                 <span id="confirmDeleteSpan_@user.Id" style="display:none">
-                                    <span>Are you sure you want to delete?</span>
-                                    <button type="submit" class="btn btn-danger">Yes</button>
-                                    <button type="button" class="btn btn-primary" onclick="confirmDelete('@user.Id',false)">No</button>
+                                    <span>Czy na pewno chcesz usunąć?</span>
+                                    <button type="submit" class="btn btn-red">Tak</button>
+                                    <button type="button" class="btn btn-green" onclick="confirmDelete('@user.Id',false)">Nie</button>
                                 </span>
 
                                 <span id="deleteSpan_@user.Id">
-                                    <button type="button" class="btn btn-danger" onclick="confirmDelete('@user.Id',true)">Delete</button>
+                                    <button type="button" class="btn btn-red" onclick="confirmDelete('@user.Id',true)">Usuń</button>
                                 </span>
                                 </form>
                             </td>
@@ -45,7 +49,13 @@
             </table>
         </div>
     </div>
-    <a asp-area="Identity" asp-page="/Account/Register" class="btn btn-primary" style="width:auto">Add new user</a>
+</div>
+<br />
+<hr />
+<br />
+<div class="flex space-x-2 md:space-x-8">
+        <button onclick="location.href='/Identity/Account/Register'" class="btn-blue" style="width:auto">Dodaj nowego użytkownika</button>
+</div>
 }
 else
 {
@@ -54,7 +64,7 @@ else
     </div>
     <div class="card-body">
         <h5 class="card-title">Use the button below to create a new user</h5>
-        <a class="btn btn-primary" style="width:auto" asp-controller="Account" asp-action="Register">Add new user</a>
+        <a class="btn btn-primary" style="width:auto" asp-controller="Account" asp-action="Register">Dodaj nowego użytkownika</a>
     </div>
 }
 

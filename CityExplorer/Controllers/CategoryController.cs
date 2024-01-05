@@ -25,13 +25,22 @@ namespace CityExplorer.Controllers
             {
                 return View(model);
             }
+
+            // Sprawdź, czy kategoria o tej samej nazwie już istnieje
+            var existingCategory = _categoryService.GetAll().FirstOrDefault(c => c.Name == model.Name);
+            if (existingCategory != null)
+            {
+                TempData["msg"] = "Kategoria o tej nazwie już istnieje";
+                return View(model);
+            }
+
             var result = _categoryService.Add(model);
             if (result)
             {
-                TempData["msg"] = "Added Successfully";
+                TempData["msg"] = "Pomyślnie dodano nową kategorię";
                 return RedirectToAction(nameof(Add));
             }
-            TempData["msg"] = "Error has occured on server side";
+            TempData["msg"] = "Wystąpił błąd po stronie serwera";
             return View(model);
         }
 
@@ -52,9 +61,10 @@ namespace CityExplorer.Controllers
             var result = _categoryService.Update(model);
             if (result)
             {
-                return RedirectToAction("GetAll");
+                TempData["msg"] = "Pomyślnie zaktualizowano kategorię";
+                return RedirectToAction(nameof(Update));
             }
-            TempData["msg"] = "Error has occured on server side";
+            TempData["msg"] = "Wystąpił błąd po stronie serwera";
             return View(model);
         }
 

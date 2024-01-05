@@ -1,35 +1,40 @@
 ﻿@model IEnumerable<CityExplorer.Models.Category>
 
-<h1>CATEGORIES LIST</h1>
+<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+<link rel="stylesheet" href="~/css/styles.css" asp-append-version="true" />
+<link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 
+<button onclick="location.href='@Url.Action("Index", "Administrator")'" class="btn-blue" style="width:auto">Cofnij</button>
+<br />
+<hr />
+<br />
 @if (Model.Any())
 {
-    <div class="card mb-3">
-        <div class="card-header">List of Existing Categories</div>
-        <div class="card-body">
-            <table class="table table-bordered">
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Actions</th>
+    <div class ="flex justify-center">
+        <div class="w-full max-w-max mt-8">
+        <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+            <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                    <tr class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
+                        <th scope="col" class="py-2 px-4 text-left">Nazwa</th>
+                        <th scope="col" class="py-2 px-4 text-center">Akcja</th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach (var category in Model)
                     {
-                        <tr>
-                            <td>@category.Name</td>
-                            <td>
+                        <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                                <th scope="row" class="px-4 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">@category.Name</th>
+                                <td class="pl-4 pr-2 py-2 text-center">
                                 <form asp-action="Delete" asp-route-id="@category.Id" method="post">
-                                    <a asp-action="Update" asp-route-id="@category.Id" class="btn btn-primary">Edit City</a>
                                     <span id="confirmDeleteSpan_@category.Id" style="display:none">
-                                        <span>Are you sure you want to delete?</span>
-                                        <button type="submit" class="btn btn-danger">Yes</button>
-                                        <button type="button" class="btn btn-primary" onclick="confirmDelete('@category.Id',false)">No</button>
+                                        <span>Czy na pewno chcesz usunąć?</span>
+                                        <button type="submit" class="btn-red">Tak</button>
+                                        <button type="button" class="btn-green" onclick="confirmDelete('@category.Id',false)">Nie</button>
                                     </span>
-
+                                    <button type="button" onclick="location.href='@Url.Action("Update","Category")'" class="btn-green">Edytuj</button>
                                     <span id="deleteSpan_@category.Id">
-                                        <button type="button" class="btn btn-danger" onclick="confirmDelete('@category.Id',true)">Delete</button>
+                                        <button type="button" class="btn-red" onclick="confirmDelete('@category.Id',true)">Usuń</button>
                                     </span>
                                 </form>
                             </td>
@@ -39,18 +44,26 @@
             </table>
         </div>
     </div>
-    <a asp-action="Add" class="btn btn-primary" style="width:auto">Add new category</a>
+    </div>
 }
 else
 {
-    <div class="card">
-        <div class="card-header">No categories created yet</div>
-    </div>
-    <div class="card-body">
-        <h5 class="card-title">Use the button below to create a new category</h5>
-        <a asp-action="Add" class="btn btn-primary" style="width:auto">Add new category</a>
+    <div class="flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800" role="alert">
+        <svg class="flex-shrink-0 inline w-4 h-4 me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z" />
+        </svg>
+        <span class="sr-only">Info</span>
+        <div>
+            <span class="font-medium"></span> Brak kategorii do wyświetlenia!
+        </div>
     </div>
 }
+<br />
+<hr />
+<br />
+<div class="flex space-x-2 md:space-x-8">
+<button onclick="location.href='@Url.Action("Add", "Category")'" class="btn-blue" style="width:auto">Dodaj kategorię</button>
+</div>
 
 @section Scripts{
     <script src="~/js/site.js"></script>

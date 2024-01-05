@@ -25,15 +25,22 @@ namespace CityExplorer.Controllers
             {
                 return View(model);
             }
+            var existingCity = _cityService.FindByCityAndCountry(model.Name, model.Country);
+            if (existingCity != null)
+            {
+                TempData["msg"] = "Miasto i państwo już istnieją";
+                return View(model);
+            }
             var result = _cityService.Add(model);
             if (result)
             {
-                TempData["msg"] = "Added Successfully";
-                return RedirectToAction(nameof(GetAll));
+                TempData["msg"] = "Dodano pomyślnie";
+                return RedirectToAction(nameof(Add));
             }
-            TempData["msg"] = "Error has occurred on the server side";
+            TempData["msg"] = "Wystąpił błąd po stronie serwera";
             return View(model);
         }
+
 
         public IActionResult Update(int id)
         {
@@ -51,10 +58,10 @@ namespace CityExplorer.Controllers
             var result = _cityService.Update(model);
             if (result)
             {
-                TempData["msg"] = "Updated Successfully";
+                TempData["msg"] = "Zaktualizowano pomyślnie";
                 return RedirectToAction(nameof(GetAll));
             }
-            TempData["msg"] = "Error has occurred on the server side";
+            TempData["msg"] = "Wystąpił błąd po stronie serwera";
             return View(model);
         }
 

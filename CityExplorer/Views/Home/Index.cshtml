@@ -1,8 +1,26 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
 }
+<link rel="stylesheet" href="~/css/styles.css"/>
+<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<body class="bg-coolGray-400">
+    <div class="container mx-auto px-4">
+        <h1 class="text-4xl font-bold mb-4 text-white">Witaj w CityExplorer!</h1>
+        <div class="grid grid-cols-1 gap-4">
+            <div class="p-4 border rounded bg-white">
+                <h2 class="text-2xl font-bold mb-2">Przeglądaj zabytki</h2>
+                <p>Możesz przeglądać listę zabytków oraz dodawać je do własnej prywatnej listy.</p>
+            </div>
+            <div class="p-4 border rounded bg-white">
+                <h2 class="text-2xl font-bold mb-2">Sprawdź trasy</h2>
+                <p>Sprawdź proponowane trasy między zabytkami. Zapisuj trasy w historii oraz udostępniaj je innym użytkownikom.</p>
+            </div>
+            <div class="p-4 border rounded bg-white">
+                <h2 class="text-2xl font-bold mb-2">Komentuj zabytki</h2>
+                <p>Możliwe jest komentowanie zabytków.</p>
+            </div>
+        </div>
+    </div>
+</body> 
+

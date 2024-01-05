@@ -12,7 +12,7 @@ namespace CityExplorer.Services.Implementation
         {
             _context = context;
         }
-        
+
         public bool Add(City model)
         {
             try
@@ -21,12 +21,12 @@ namespace CityExplorer.Services.Implementation
                 _context.SaveChanges();
                 return true;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return false;
             }
         }
-        
+
         public bool Update(City model)
         {
             try
@@ -57,7 +57,12 @@ namespace CityExplorer.Services.Implementation
                 return false;
             }
         }
-    
+
+        public City FindByCityAndCountry(string cityName, string countryName)
+        {
+            return _context.Cities.FirstOrDefault(c => c.Name == cityName && c.Country == countryName);
+        }
+
         public City FindById(int id)
         {
            return _context.Cities.Find(id);

@@ -2,31 +2,77 @@
 @model List<CityExplorer.Models.UserLandmarkList>
 @inject UserManager<AppUser> UserManager
 
-<div class="tbl-container">
-    <h2>Publiczne listy zabytków</h2>
-    @foreach (var list in Model.OrderByDescending(l => l.CreatedAt))
-    {
-        <div class="public-list">
-            <h3>@list.Name (@list.CreatedAt.ToString("dd-MM-yyyy HH:mm"))</h3>
-            <p>Udostępnione przez: @list.SharedBy</p>
+<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+<link rel="stylesheet" href="~/css/styles.css" asp-append-version="true" />
 
-            <a asp-action="RouteDetails" asp-route-id="@list.Id" class="btn btn-default">Szczegóły</a>
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>Zdjęcie</th>
-                        <th>Nazwa</th>
-                    </tr>
-                </thead>
-                @foreach (var item in list.UserLandmarks)
-                {
-                    <tr>
-                        <td><img style="height:90px;width:90px" src="/Uploads/@item.Landmark.ImagePath" /></td>
-                        <td>@item.Landmark.Name</td>
-                    </tr>
-                }
-            </table>
+<div class="container mx-auto mt-8">
+    <h2 class="text-2xl font-bold mb-4">Publiczne listy zabytków</h2>
+
+    @if (User.Identity.IsAuthenticated)
+    {
+        foreach (var list in Model.OrderByDescending(l => l.CreatedAt))
+        {
+            <div class="bg-white shadow-md p-4 mb-4">
+                <h3 class="text-lg font-semibold mb-2">@list.Name (@list.CreatedAt.ToString("dd-MM-yyyy HH:mm"))</h3>
+                <p>Udostępnione przez: @list.SharedBy</p>
+
+                <a asp-action="RouteDetails" asp-route-id="@list.Id" class="btn btn-default mt-2">Szczegóły</a>
+                <table class="table mt-4">
+                    <thead>
+                        <tr>
+                            <th>Zdjęcie</th>
+                            <th>Nazwa</th>
+                        </tr>
+                    </thead>
+                    @foreach (var item in list.UserLandmarks)
+                    {
+                        <tr>
+                            <td><img class="h-16 w-16" src="/Uploads/@item.Landmark.ImagePath" /></td>
+                            <td>@item.Landmark.Name</td>
+                        </tr>
+                    }
+                </table>
+            </div>
+        }
+    }
+    else
+    {
+        <div class="flex justify-center items-center h-screen bg-blue-500">
+            <div class="bg-white py-8 px-10 rounded-lg shadow-lg">
+                <h1 class="text-xl font-semibold">Zaloguj się aby skorzystać ze wszystkich możliwości</h1>
+                <a href="login.html" class="mt-4 flex items-center justify-center bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-700 transition duration-300">
+                    Zaloguj się
+                </a>
+                <div class="mt-8">
+                    <h2 class="text-lg font-semibold">Funkcjonalności:</h2>
+                    <ul class="mt-4">
+                        <li class="flex items-center">
+                            <svg class="h-5 w-5 mr-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M12 2a10 10 0 00-7.15 3A10 10 0 002 12c0 5.52 4.48 10 10 10s10-4.48 10-10c0-1.66-.4-3.23-1.15-4.65A10 10 0 0012 2zm0 18c-1.81 0-3.52-.49-5-1.34M12 2v6m0 0v6m0-6h6m-6 0H6"></path>
+                            </svg>
+                            Prywatna lista zabytków
+                        </li>
+                        <li class="flex items-center mt-2">
+                            <svg class="h-5 w-5 mr-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M20 5v14a2 2 0 01-2 2H6a2 2 0 01-2-2V5a2 2 0 012-2h12a2 2 0 012 2zm-2 5h-4m0 0H6m4 0h4m6-4V5m0 0H6m14 0v14h4V5h-4z"></path>
+                            </svg>
+                            Zapisywanie tras w historii
+                        </li>
+                        <li class="flex items-center mt-2">
+                            <svg class="h-5 w-5 mr-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M22 21.55l-4.7-4.7A7 7 0 0012 14V3a7 7 0 00-7 7v4.61M15 13H9"></path>
+                            </svg>
+                            Dodawanie ocen i porad
+                        </li>
+                        <li class="flex items-center mt-2">
+                            <svg class="h-5 w-5 mr-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M4 11a7.97 7.97 0 002 5.14M5 19S1 17 1 13h2c0 2.22 1.54 4 3.5 4S11 15.22 11 13H5m0 0A2 2 0 115 9m0 0V9h0M5 9h.01"></path>
+                            </svg>
+                            Udostępnione trasy
+                        </li>
+                    </ul>
+                </div>
+            </div>
         </div>
     }
 </div>
-

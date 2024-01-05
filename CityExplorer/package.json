@@ -1,0 +1,23 @@
+{
+  "name": "cityexplorer",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "css:build": "npx tailwindcss -i ./wwwroot/css/site.css -o ./wwwroot/css/styles.css --minify"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/qbasta/CityExplorer.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/qbasta/CityExplorer/issues"
+  },
+  "homepage": "https://github.com/qbasta/CityExplorer#readme",
+  "devDependencies": {
+    "tailwindcss": "^3.4.0"
+  }
+}
