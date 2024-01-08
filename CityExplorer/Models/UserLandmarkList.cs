@@ -14,5 +14,6 @@ namespace CityExplorer.Models
         public string Name { get; set; } = "Domyślna nazwa";
         public DateTime CreatedAt { get; set; } = DateTime.Now;       
         public string SharedBy { get; set; }
+        public string Description { get; set; } = "Brak opisu";
     }
 }   

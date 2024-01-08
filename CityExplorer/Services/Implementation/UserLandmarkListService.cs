@@ -1,6 +1,7 @@
 ﻿using CityExplorer.Data;
 using CityExplorer.Models;
 using CityExplorer.Services.Abstract;
+using CityExplorer.ViewModels;
 using Microsoft.EntityFrameworkCore;
 
 namespace CityExplorer.Services.Implementation
@@ -99,7 +100,7 @@ namespace CityExplorer.Services.Implementation
             return true;
         }
 
-        public bool SaveUserList(string userId, string name)
+        public bool SaveUserList(string userId, string name, string description)
         {
             var user = _context.Users.Find(userId); // Pobierz obiekt AppUser na podstawie userId
             var userLandmarkList = _context.UserLandmarkLists
@@ -111,7 +112,8 @@ namespace CityExplorer.Services.Implementation
                 userLandmarkList.IsSaved = true;
                 userLandmarkList.Name = name;
                 userLandmarkList.CreatedAt = DateTime.Now;
-                userLandmarkList.SharedBy = user.FirstName + " " + user.LastName; // Dodajemy to pole
+                userLandmarkList.SharedBy = user.FirstName + " " + user.LastName;
+                userLandmarkList.Description = description; // Dodajemy to pole
                 _context.SaveChanges();
             }
 
@@ -138,13 +140,19 @@ namespace CityExplorer.Services.Implementation
             return false;
         }
 
-        public List<UserLandmarkList> GetPublicUserLists()
+        public UserLandmarkListViewModel GetPublicUserLists()
         {
-            return _context.UserLandmarkLists
+            var userLandmarkList = _context.UserLandmarkLists
                 .Include(ull => ull.UserLandmarks)
                 .ThenInclude(ul => ul.Landmark)
-                .Where(ull => ull.IsPublic && ull.IsSaved)
-                .ToList();
+                .FirstOrDefault();
+
+            var viewModel = new UserLandmarkListViewModel
+            {
+                UserLandmarkLists = userLandmarkList
+            };
+
+            return viewModel;
         }
 
         public UserLandmarkList GetUserList(string userId)

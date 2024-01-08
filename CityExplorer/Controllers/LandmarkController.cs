@@ -130,6 +130,7 @@ using System.Security.Claims;
             }
 
             [HttpPost]
+            [ValidateAntiForgeryToken]
             public IActionResult AddReview(Review model)
             {
                 try

@@ -1,37 +1,49 @@
 ﻿@using Microsoft.AspNetCore.Identity;
-@model List<CityExplorer.Models.UserLandmarkList>
+@model CityExplorer.ViewModels.UserLandmarkListViewModel
 @inject UserManager<AppUser> UserManager
 
-<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-<link rel="stylesheet" href="~/css/styles.css" asp-append-version="true" />
-
 <div class="container mx-auto mt-8">
-    <h2 class="text-2xl font-bold mb-4">Publiczne listy zabytków</h2>
-
     @if (User.Identity.IsAuthenticated)
     {
-        foreach (var list in Model.OrderByDescending(l => l.CreatedAt))
+        <h2 class="text-2xl font-bold mb-4" style="color: blue">Publiczne listy zabytków</h2>
+        @foreach (var list in Model.UserLandmarks)
         {
-            <div class="bg-white shadow-md p-4 mb-4">
-                <h3 class="text-lg font-semibold mb-2">@list.Name (@list.CreatedAt.ToString("dd-MM-yyyy HH:mm"))</h3>
-                <p>Udostępnione przez: @list.SharedBy</p>
-
-                <a asp-action="RouteDetails" asp-route-id="@list.Id" class="btn btn-default mt-2">Szczegóły</a>
-                <table class="table mt-4">
-                    <thead>
-                        <tr>
-                            <th>Zdjęcie</th>
-                            <th>Nazwa</th>
-                        </tr>
-                    </thead>
-                    @foreach (var item in list.UserLandmarks)
-                    {
-                        <tr>
-                            <td><img class="h-16 w-16" src="/Uploads/@item.Landmark.ImagePath" /></td>
-                            <td>@item.Landmark.Name</td>
-                        </tr>
-                    }
-                </table>
+            <div class="bg-gray-50 border-2 border-gray-900 rounded-lg shadow-lg p-4">
+                <div class="grid grid-cols-3 gap-1">
+                    <div class="col-span-1">
+                        <h2 class="text-2xl text-gray-800 font-bold">@list.Landmark.Name</h2>
+                        <p class="text-gray-600">@list.UserLandmarkList.SharedBy</p>
+                        <p class="text-gray-600 mb-2">@list.UserLandmarkList.CreatedAt.ToString("dd-MM-yyyy HH:mm")</p>
+                        <p class="text-gray-600">@list.UserLandmarkList</p>
+                    </div>
+                    <div class="col-span-1">
+                        @if (Model.UserLandmarks.Count <= 4)
+                        {
+                            <div class="flex flex-col items-center">
+                                @foreach (var userLandmark in Model.UserLandmarks)
+                                {
+                                    <img src="/Uploads/@userLandmark.Landmark.ImagePath" class="w-24 h-24">
+                                    <p>@userLandmark.Landmark.Name</p>
+                                }
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="grid grid-cols-4 gap-4">
+                                @foreach (var userLandmark in Model.UserLandmarks)
+                                {
+                                    <div>
+                                        <img src="/Uploads/@userLandmark.Landmark.ImagePath" class="w-24 h-24">
+                                        <p>@userLandmark.Landmark.Name</p>
+                                    </div>
+                                }
+                            </div>
+                        }
+                    </div>
+                    <div class="col-span-1">
+                        <div class="w-full h-full border-1 border-gray-900 rounded-lg bg-gray-200" id="mapid"></div>
+                    </div>
+                </div>
             </div>
         }
     }
@@ -66,9 +78,9 @@
                         </li>
                         <li class="flex items-center mt-2">
                             <svg class="h-5 w-5 mr-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M4 11a7.97 7.97 0 002 5.14M5 19S1 17 1 13h2c0 2.22 1.54 4 3.5 4S11 15.22 11 13H5m0 0A2 2 0 115 9m0 0V9h0M5 9h.01"></path>
+                                <path d="M12 2a10 10 0 00-7.15 3A10 10 0 002 12c0 5.52 4.48 10 10 10s10-4.48 10-10c0-1.66-.4-3.23-1.15-4.65A10 10 0 0012 2zm0 18c-1.81 0-3.52-.49-5-1.34M12 2v6m0 0v6m0-6h6m-6 0H6"></path>
                             </svg>
-                            Udostępnione trasy
+                            Tworzenie prywatnych tras
                         </li>
                     </ul>
                 </div>
@@ -76,3 +88,48 @@
         </div>
     }
 </div>
+
+@section Scripts {
+    <script>
+        if (Model.UserLandmarks != null && Model.UserLandmarks.Count > 0 && Model.UserLandmarks[0].Landmark != null) {
+            <text>
+                    var map = L.map('mapid').setView([@Model.UserLandmarks[0].Landmark.Latitude, @Model.UserLandmarks[0].Landmark.Longitude], 11);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, }).addTo(map);
+            var waypoints = [];
+            </text>
+        @foreach (var item in Model.UserLandmarks)
+        {
+            if (item.Landmark != null)
+            {
+                <text>
+                                    var latLng = L.latLng(@item.Landmark.Latitude, @item.Landmark.Longitude);
+                    L.marker(latLng, { draggable: false }).addTo(map)
+                        .bindPopup('Zabytek: ' + @item.Landmark.Name);
+                    waypoints.push(latLng);
+                </text>
+            }
+        }
+                <text>
+                    var control = L.Routing.control({
+                    waypoints: waypoints,
+                    routeWhileDragging: false,
+                    addWaypoints: false,
+                    router: L.Routing.osrmv1({
+                        serviceUrl: 'https://router.project-osrm.org/route/v1',
+                        profile: 'foot',
+                    }),
+                    show: true,
+                    edit: false
+                }).addTo(map);
+            </text>
+        }
+    </script>
+}
+
+<link href="https://cdn.jsdelivr.net/npm/flowbite@1.0.0/dist/flowbite.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.css" />
+<script src="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.js"></script>
+<link rel="stylesheet" href="~/css/styles.css" asp-append-version="true" />

@@ -5,7 +5,13 @@
 <div class="tbl-container mx-10 mt-12">
     @if (Model.UserLandmarks.Count == 0)
     {
-        <footer>Twoja lista jest pusta. Dodaj zabytek, aby rozpocząć!</footer>
+        <div class="flex items-center justify-center h-screen">
+            <div class="bg-white shadow-lg rounded-lg p-8 w-96">
+                <h2 class="text-blue-500 text-center text-3xl font-semibold mb-4">Twoja lista jest pusta!</h2>
+                <p class="text-gray-700 text-center">Aby utworzyć nową listę prywatną, dodaj zabytek z ogólnej listy zabytków.</p>
+                <p class="text-gray-700 text-center mt-4">Możesz to zrobić <a href="/Landmark/LandmarkList" class="text-blue-500 underline">tutaj</a>.</p>
+            </div>
+        </div>
     }
     else
     {
@@ -15,6 +21,8 @@
                     <div class="relative flex">
                         <label for="listName" class="text-sm absolute -top-6">Nazwa pod którą chcesz zapisać listę:</label>
                         <input type="text" class="px-4 py-2 rounded-full pl-12 border border-gray-300 w-64" id="listName" name="name" placeholder="Nazwa listy" required>
+                        <label for="listDescription" class="text-sm absolute -top-6">Opis trasy:</label>
+                        <input type="text" class="px-4 py-2 rounded-full pl-12 border border-gray-300 w-64" id="listDescription" name="description" placeholder="Opis trasy" required>
                         <button type="submit" class="px-4 py-2 btn-green ml-4 h-full">Zapisz listę</button>
                     </div>
                 </div>
@@ -73,7 +81,7 @@
         @if (Model.UserLandmarks.Count > 0)
         {
             <text>
-                                                var map = L.map('mapid').setView([@Model.UserLandmarks[0].Landmark.Latitude, @Model.UserLandmarks[0].Landmark.Longitude], 13);
+            var map = L.map('mapid').setView([@Model.UserLandmarks[0].Landmark.Latitude, @Model.UserLandmarks[0].Landmark.Longitude], 13);
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 maxZoom: 19,
             }).addTo(map);
@@ -81,7 +89,7 @@
                 @foreach (var item in Model.UserLandmarks)
                 {
                     <text>
-                                                                var latLng = L.latLng(@item.Landmark.Latitude, @item.Landmark.Longitude);
+                var latLng = L.latLng(@item.Landmark.Latitude, @item.Landmark.Longitude);
                 L.marker(latLng, { draggable: false }).addTo(map)  // Zmieniono 'dragging' na 'draggable'
                     .bindPopup('Zabytek: @item.Landmark.Name');
                 waypoints.push(latLng);

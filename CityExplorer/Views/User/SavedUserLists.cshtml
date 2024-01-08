@@ -19,6 +19,7 @@
                         <th>Godziny otwarcia</th>
                         <th>Czas zwiedzania</th>
                         <th>Miasto</th>
+                        <th>Opis</th>
                     </tr>
                 </thead>
                 @foreach (var item in list.UserLandmarks)
@@ -30,6 +31,7 @@
                         <td>@item.Landmark.OpeningHours</td>
                         <td>@item.Landmark.TourDuration</td>
                         <td>@item.Landmark.City?.Name</td>
+                        <td>@item.Landmark.Description</td>
                         <td>
                             <form asp-action="RemoveFromUserLandmarks" method="post">
                                 <input type="hidden" name="landmarkId" value="@item.LandmarkId" />

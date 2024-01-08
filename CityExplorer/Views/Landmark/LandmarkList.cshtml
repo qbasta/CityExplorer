@@ -2,79 +2,110 @@
 @{
 }
 <link href="https://cdn.jsdelivr.net/npm/flowbite@1.0.0/dist/flowbite.min.css" rel="stylesheet">
-<link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+<link rel="stylesheet" href="~/css/styles.css" asp-append-version="true" />
+
+
 
 <div class="tbl-container">
-    <h2>Lista zabytków</h2>
-    <div class="search-container">
-        <form asp-action="LandmarkList" method="get">
-            <label for="searchTerm">Wyszukaj zabytek:</label>
-            <input type="text" name="searchTerm" id="searchTerm" value="@Model.Term" autocomplete="off" />
-            <label for="cityId">Filtruj po mieście:</label>
-            <select name="CityFilter" id="cityId">
-                <option value="">--- Wybierz miasto ---</option>
-                @foreach (var city in Model.Cities)
-                {
-                    <option value="@city">@city</option>
-                }
-            </select>
-            <label for="countryId">Filtruj po państwie:</label>
-            <select name="CountryFilter" id="countryId">
-                <option value="">--- Wybierz kraj ---</option>
-                @foreach (var country in Model.Countries)
-                {
-                    <option value="@country">@country</option>
-                }
-            </select>
-            <button type="submit">Szukaj</button>
+    <div class="search-container bg-gray-50">
+        <form asp-action="LandmarkList" method="get" class="flex flex-col gap-4 p-4">
+            <div>
+            <div class="flex flex-wrap gap-4">
+                <div class="flex flex-col">
+                    <label for="searchTerm" class="block text-gray-900 text-sm font-bold mb-2">Wyszukaj zabytek:</label>
+                    <input type="text" name="searchTerm" id="searchTerm" value="@Model.Term" autocomplete="off" class="bg-gray text-gray-900 rounded px-4 py-2 border-2 border-gray-800" />
+                </div>
+
+                <div class="flex flex-col">
+                    <label for="cityId" class="block text-gray-900 text-sm font-bold mb-2">Filtruj po mieście:</label>
+                    <select name="CityFilter" id="cityId" class="bg-gray-200 text-gray-900 rounded px-4 py-2 border-2 border-gray-800">
+                        <option value="">--- Wybierz miasto ---</option>
+                        @foreach (var city in Model.Cities)
+                        {
+                            <option value="@city">@city</option>
+                        }
+                    </select>
+                </div>
+
+                <div class="flex flex-col">
+                    <label for="countryId" class="block text-gray-900 text-sm font-bold mb-2">Filtruj po państwie:</label>
+                    <select name="CountryFilter" id="countryId" class="bg-gray-200 text-gray-900 rounded px-4 py-2 border-2 border-gray-800">
+                        <option value="">--- Wybierz kraj ---</option>
+                        @foreach (var country in Model.Countries)
+                        {
+                            <option value="@country">@country</option>
+                        }
+                    </select>
+                </div>
+                </div>
+
+                <div class="flex flex-col items-end">
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <button class="btn-green">
+                            <a asp-action="Add" class="btn btn-default">Dodaj zabytek</a>
+                        </button>
+                    }
+                </div>
+            </div>
+            <button type="submit" class="font-bold btn-blue px-6 py-3">Szukaj</button>
         </form>
     </div>
-    <table class="table">
-        <thead>
-        <tr>
-            <th>Zdjęcie</th>
-            <th>Nazwa</th>
-            <th>Kategoria</th>
-            <th>Godziny otwarcia</th>
-            <th>Czas zwiedzania</th>
-            <th>Miasto</th>
-            <th>Akcja</th>
-        </tr>
-        </thead>
-        @foreach (var item in Model.LandmarkList)
-        {
-            <tr>
-                <td><img style="height:90px;width:90px" src="/Uploads/@item.ImagePath" /></td>
-                <td>@item.Name</td>
-                <td>@item.CategoryNames</td>
-                <td>@item.OpeningHours</td>
-                <td>@item.TourDuration</td>
-                <td>@item.City?.Name</td>
-
-                <td>
-                    <form asp-action="Delete" asp-route-id="@item.Id" method="post">
-                    <a href="/Landmark/Edit?id=@item.Id" class="btn btn-default">Edytuj</a>
-                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-default">Szczegóły</a>
-                        <span id="confirmDeleteSpan_@item.Id" style="display:none">
-                            <span>Are you sure you want to delete?</span>
-                            <button type="submit" class="btn btn-danger">Yes</button>
-                            <button type="button" class="btn btn-primary" onclick="confirmDelete('@item.Id',false)">No</button>
-                        </span>
-
-                        <span id="deleteSpan_@item.Id">
-                            <button type="button" class="btn btn-danger" onclick="confirmDelete('@item.Id',true)">Delete</button>
-                        </span>
-                        <button type="button" class="btn btn-success" onclick="addToUserList('@item.Id')">Dodaj do listy</button>
-    
-                    </form>
-                </td>
-            </tr>
-        }
-
-    </table>
 </div>
-<a asp-action="Add" class="btn btn-default">Dodaj zabytek</a>
 
+@foreach(var item in Model.LandmarkList)
+{
+    <div class="bg-gray-50 border-2 border-gray-900 rounded-lg shadow-lg p-4">
+        <div class="grid grid-cols-4 gap-4">
+            <div class="col-span-1">
+                <img style="height:220px;width:220px" class="w-full h-auto rounded-lg" src="/Uploads/@item.ImagePath" />
+            </div>
+            <div class="col-span-1">
+                <h2 class="text-xl text-gray-900 font-bold">@item.Name</h2>
+                <br>
+                <p class="text-gray-900 font-bold">Średnia ocena: <span class="text-gray-500">@item.AverageRating</span></p>
+                <p class="text-gray-900 font-bold">Godziny otwarcia: <span class="text-gray-500">@item.OpeningHours</span></p>
+                <p class="text-gray-900 font-bold">Czas zwiedzania: <span class="text-gray-500">@item.TourDuration</span></p>
+            </div>
+            <div class="col-span-1">
+                <br>
+                <br>
+                <div class="text-gray-900 font-bold">
+                    <p>
+                        Kategorie:
+                        <span class="text-gray-500">@item.CategoryNames</span>
+                    </p>
+                </div>
+                <p class="text-gray-900 font-bold">Kraj: <span class="text-gray-500">@item.City?.Country</span></p>
+                <p class="text-gray-900 font-bold">Miasto: <span class="text-gray-500">@item.City?.Name</span></p>
+            </div>
+            <div class="col-span-1">
+                <div class="flex">
+                    <button type="button" class="btn-blue" onclick="addToUserList('@item.Id')">Dodaj do listy</button>
+                    <button type="button" class="btn-blue"><a href="/Landmark/Details/@item.Id" class="text-white btn-blue ml-2">Szczegóły</a></button>
+                </div>
+                <div class="flex mt-2">
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <form asp-action="Delete" asp-route-id="@item.Id" method="post">
+                            <span id="confirmDeleteSpan_@item.Id" style="display:none">
+                                <span>Are you sure you want to delete?</span>
+                                <button type="submit" class="btn-red">Yes</button>
+                                <button type="button" class="btn-green ml-2" onclick="confirmDelete('@item.Id',false)">No</button>
+                            </span>
+                            <span id="deleteSpan_@item.Id">
+                                <button type="button" class="btn-red" onclick="confirmDelete('@item.Id',true)">Delete</button>
+                            </span>
+                        </form>
+                        <button type="button" class="btn-green"><a href="/Landmark/Edit?id=@item.Id" class="btn-green text-white ml-2">Edytuj</a></button>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+    <br />
+}
 @section Scripts{
     <script src="~/js/site.js"></script>
 

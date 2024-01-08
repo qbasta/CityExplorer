@@ -23,10 +23,10 @@ namespace CityExplorer.Controllers
         }
 
         [HttpPost]
-        public IActionResult SaveUserList(string name)
+        public IActionResult SaveUserList(string name, string description)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var success = _userLandmarkListService.SaveUserList(userId, name);
+            var success = _userLandmarkListService.SaveUserList(userId, name, description);
 
             if (success)
             {
@@ -108,9 +108,9 @@ namespace CityExplorer.Controllers
 
         public IActionResult PublicUserLists()
         {
-            var publicUserLists = _userLandmarkListService.GetPublicUserLists();
+            var viewModel = _userLandmarkListService.GetPublicUserLists();
 
-            return View(publicUserLists);
+            return View(viewModel);
         }
 
         public IActionResult UserList()
