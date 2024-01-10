@@ -1,50 +1,107 @@
 ﻿@model List<CityExplorer.Models.UserLandmarkList>
 
-<div class="tbl-container">
-    <h2>Twoje zapisane listy zabytków</h2>
-    @foreach (var list in Model.OrderByDescending(l => l.CreatedAt))
-    {
-        <div class="saved-list">
-            <h3>@list.Name (@list.CreatedAt.ToString("dd-MM-yyyy HH:mm"))</h3>
-            <form asp-action="RemoveSavedUserList" method="post">
-                <input type="hidden" name="listId" value="@list.Id" />
-                <button type="submit" class="btn btn-danger">Usuń listę</button>
-            </form>
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>Zdjęcie</th>
-                        <th>Nazwa</th>
-                        <th>Kategoria</th>
-                        <th>Godziny otwarcia</th>
-                        <th>Czas zwiedzania</th>
-                        <th>Miasto</th>
-                        <th>Opis</th>
-                    </tr>
-                </thead>
-                @foreach (var item in list.UserLandmarks)
+@foreach (var list in Model.OrderByDescending(l => l.CreatedAt))
+{
+<div class="mb-4">
+    <div class="bg-gray-100 shadow-lg rounded-lg w-full p-8">
+        <div class="bg-white px-8 py-6 rounded-t-lg">
+            <h2 class="text-3xl font-bold mb-2">@list.Name</h2>
+            <h3 class="text-lg text-gray-500 mb-4">(@list.CreatedAt.ToString("dd-MM-yyyy HH:mm"))</h3>
+            <p class="mb-4 text-lg w-2/3">@list.Description</p>
+            </div>
+            <div class="bg-white px-8 py-6 rounded-b-lg flex flex-col items-end">
+                    <form class="mr-4" asp-action="RemoveSavedUserList" method="post">
+                        <input type="hidden" name="listId" value="@list.Id" />
+                    <button type="submit" class="btn-red font-bold px-5 py-3">Usuń listę</button>
+                    </form>
+                    <form class="ml-4" asp-action="MakeUserListPublic" method="post">
+                        <input type="hidden" name="listId" value="@list.Id" />
+                    <button type="submit" class="btn-blue font-bold px-5 py-3">Udostępnij listę</button>
+                    </form>
+            </div>
+                <div class="bg-white px-4 py-6 rounded-b-lg">
+                    <table class="w-full border border-gray-300">
+                        <thead class="text-xs text-gray-700 uppercase bg-gray-200">
+                            <tr>
+                                <th class="px-4 py-2">Zdjęcie</th>
+                                <th class="px-4 py-2">Nazwa</th>
+                                <th class="px-4 py-2">Kategoria</th>
+                                <th class="px-4 py-2">Godziny otwarcia</th>
+                                <th class="px-4 py-2">Czas zwiedzania</th>
+                                <th class="px-4 py-2">Miasto</th>
+                                <th class="px-4 py-2">Opis</th>
+                                <th class="px-4 py-2"></th>
+                            </tr>
+                        </thead>
+                        @foreach (var item in list.UserLandmarks)
+                        {
+                            <tr class="bg-white border-b">
+                                <td class="px-4 py-2"><img class="h-24 w-24 object-cover" style="height:90px;width:90px" src="/Uploads/@item.Landmark.ImagePath" /></td>
+                                <td class="px-4 py-2">@item.Landmark.Name</td>
+                                <td class="px-4 py-2">@item.Landmark.CategoryList</td>
+                                <td class="px-4 py-2">@item.Landmark.OpeningHours</td>
+                                <td class="px-4 py-2">@item.Landmark.TourDuration</td>
+                                <td class="px-4 py-2">@item.Landmark.City?.Name</td>
+                                <td class="px-4 py-2">@item.Landmark.Description</td>
+                                <td class="px-4 py-2">
+                                    <form asp-action="RemoveFromUserLandmarks" method="post">
+                                        <input type="hidden" name="landmarkId" value="@item.LandmarkId" />
+                                        <button type="submit" class="btn-red">Usuń</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        }
+                    </table>
+                        <div class="w-full rounded-lg border mt-4">
+                            <div class="text-primary bg-secondary p-4 rounded border" id="mapid_@list.Id" style="height: 400px; width: 100%;"></div>
+                        </div>
+                    </div>
+                </div>
+            <script>
+                window.onload = function () {
+                @foreach (var innerList in Model.OrderByDescending(l => l.CreatedAt))
                 {
-                    <tr>
-                        <td><img style="height:90px;width:90px" src="/Uploads/@item.Landmark.ImagePath" /></td>
-                        <td>@item.Landmark.Name</td>
-                        <td>@item.Landmark.CategoryNames</td>
-                        <td>@item.Landmark.OpeningHours</td>
-                        <td>@item.Landmark.TourDuration</td>
-                        <td>@item.Landmark.City?.Name</td>
-                        <td>@item.Landmark.Description</td>
-                        <td>
-                            <form asp-action="RemoveFromUserLandmarks" method="post">
-                                <input type="hidden" name="landmarkId" value="@item.LandmarkId" />
-                                <button type="submit" class="btn btn-danger">Usuń</button>
-                            </form>
-                        </td>
-                    </tr>
+                    if (innerList.UserLandmarks.Count > 0)
+                    {
+                        <text>
+                                        var map = L.map('mapid_@innerList.Id').setView([@innerList.UserLandmarks[0].Landmark.Latitude, @innerList.UserLandmarks[0].Landmark.Longitude], 13);
+                            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                                maxZoom: 19,
+                            }).addTo(map);
+                            var waypoints = [];
+                            @foreach (var item in innerList.UserLandmarks)
+                            {
+                                <text>
+                                                var latLng = L.latLng(@item.Landmark.Latitude, @item.Landmark.Longitude);
+                                L.marker(latLng, { draggable: false }).addTo(map)
+                                    .bindPopup('Zabytek: @item.Landmark.Name');
+                                waypoints.push(latLng);
+                                </text>
+                            }
+                                        var control = L.Routing.control({
+                                waypoints: waypoints,
+                                routeWhileDragging: false,
+                                addWaypoints: false,
+                                router: L.Routing.osrmv1({
+                                    serviceUrl: 'https://router.project-osrm.org/route/v1',
+                                    profile: 'foot',
+                                }),
+                                show: true,
+                                edit: false
+                            }).addTo(map);
+                        </text>
+                    }
                 }
-            </table>
-            <form asp-action="MakeUserListPublic" method="post">
-                <input type="hidden" name="listId" value="@list.Id" />
-                <button type="submit" class="btn btn-primary">Udostępnij listę</button>
-            </form>
-        </div>
-    }
+                }
+            </script>
 </div>
+}
+
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.css" />
+<script src="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+<link rel="stylesheet" href="~/css/styles.css" asp-append-version="true" />
+

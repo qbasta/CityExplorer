@@ -142,14 +142,18 @@ namespace CityExplorer.Services.Implementation
 
         public UserLandmarkListViewModel GetPublicUserLists()
         {
-            var userLandmarkList = _context.UserLandmarkLists
+            var userLandmarkLists = _context.UserLandmarkLists
                 .Include(ull => ull.UserLandmarks)
                 .ThenInclude(ul => ul.Landmark)
-                .FirstOrDefault();
+                .ToList();
+
+            var userLandmarks = _context.UserLandmarks
+                .Include(ul => ul.Landmark)
+                .ToList();
 
             var viewModel = new UserLandmarkListViewModel
             {
-                UserLandmarkLists = userLandmarkList
+                UserLandmarks = userLandmarks
             };
 
             return viewModel;
@@ -159,7 +163,8 @@ namespace CityExplorer.Services.Implementation
         {
             var userList = _context.UserLandmarkLists
                 .Include(ull => ull.UserLandmarks)
-                .ThenInclude(ul => ul.Landmark)
+                    .ThenInclude(ul => ul.Landmark)
+                        .ThenInclude(l => l.City)
                 .FirstOrDefault(ull => ull.AppUserId == userId && !ull.IsSaved);
 
             // Jeśli userList jest null, zwróć nową, pustą listę
@@ -181,6 +186,7 @@ namespace CityExplorer.Services.Implementation
             return _context.UserLandmarkLists
                 .Include(ull => ull.UserLandmarks)
                 .ThenInclude(ul => ul.Landmark)
+                .ThenInclude(l => l.City)
                 .Where(ull => ull.AppUserId == userId && ull.IsSaved)
                 .ToList();
         }

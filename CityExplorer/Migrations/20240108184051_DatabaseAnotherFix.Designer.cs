@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CityExplorer.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20231229010939_DatabaseRebuild")]
-    partial class DatabaseRebuild
+    [Migration("20240108184051_DatabaseAnotherFix")]
+    partial class DatabaseAnotherFix
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -269,6 +269,10 @@ namespace CityExplorer.Migrations
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsPublic")
                         .HasColumnType("bit");
