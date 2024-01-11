@@ -7,7 +7,7 @@
 
 
 
-<div class="tbl-container">
+<div class="tbl-container bg-100 border-2 rounded border-gray-700">
     <div class="search-container bg-gray-50">
         <form asp-action="LandmarkList" method="get" class="flex flex-col gap-4 p-4">
             <div>
@@ -39,7 +39,10 @@
                     </select>
                 </div>
                 </div>
+                </div>
+            <button type="submit" class="font-bold position-relative btn-blue px-1 py-3">Szukaj</button>
 
+        </form>
                 <div class="flex flex-col items-end">
                     @if (User.IsInRole("Admin"))
                     {
@@ -49,11 +52,8 @@
                     }
                 </div>
             </div>
-            <button type="submit" class="font-bold btn-blue px-6 py-3">Szukaj</button>
-        </form>
     </div>
-</div>
-
+<br />
 @foreach(var item in Model.LandmarkList)
 {
     <div class="bg-gray-50 border-2 border-gray-900 rounded-lg shadow-lg p-4">

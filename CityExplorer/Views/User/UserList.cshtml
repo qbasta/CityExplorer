@@ -2,11 +2,11 @@
 
 
 
-<div class="tbl-container mx-10 mt-12">
+<div class="bg-gray-100 border-2 border-gray-900 rounded-lg shadow-lg px-6 py-4">
     @if (Model.UserLandmarks.Count == 0)
     {
         <div class="flex items-center justify-center h-screen">
-            <div class="bg-white shadow-lg rounded-lg p-8 w-96">
+            <div class="bg-white border-2 border-gray-900 shadow-lg rounded-lg p-8 w-96">
                 <h2 class="text-blue-500 text-center text-3xl font-semibold mb-4">Twoja lista jest pusta!</h2>
                 <p class="text-gray-700 text-center">Aby utworzyć nową listę prywatną, dodaj zabytek z ogólnej listy zabytków.</p>
                 <p class="text-gray-700 text-center mt-4">Możesz to zrobić <a href="/Landmark/LandmarkList" class="text-blue-500 underline">tutaj</a>.</p>
@@ -15,55 +15,57 @@
     }
     else
     {
-        <div class="flex flex-col">
-            <form action="SaveUserList" method="post" class="flex mb-8">
-                <div class="relative flex">
-                    <div class="relative flex">
-                        <label for="listName" class="text-sm absolute -top-6">Nazwa pod którą chcesz zapisać listę:</label>
-                        <input type="text" class="px-4 py-2 rounded-full pl-12 border border-gray-300 w-64" id="listName" name="name" placeholder="Nazwa listy" required>
-                        <label for="listDescription" class="text-sm absolute -top-6">Opis trasy:</label>
-                        <input type="text" class="px-4 py-2 rounded-full pl-12 border border-gray-300 w-64" id="listDescription" name="description" placeholder="Opis trasy" required>
-                        <button type="submit" class="px-4 py-2 btn-green ml-4 h-full">Zapisz listę</button>
-                    </div>
+        <div class="mt-4">
+            <form action="SaveUserList" method="post" class="flex flex-col mb-8">
+                <div class="relative flex flex-col">
+                    <label for="listName" class="text-gray text-sm font-semibold mb-1">Nazwa pod którą chcesz zapisać listę:</label>
+                    <input type="text" class="px-4 py-2 rounded border border-gray-300 mb-2 w-56" id="listName" name="name" placeholder="Nazwa listy" required>
+                </div>
+                <div class="relative flex flex-col mt-2">
+                    <label for="listDescription" class="text-gray text-sm font-semibold mb-1">Opis trasy:</label>
+                    <input type="text" class="px-4 py-2 rounded border border-gray-300 h-24" id="listDescription" name="description" placeholder="Opis trasy" required>
+                    <button type="submit" class="px-10 py-3 font-bold text-lg btn-green mt-4 text-center self-end">Zapisz listę</button>
                 </div>
             </form>
         </div>
-        <div class="overflow-x-auto border-t-2">
-            <table class="table-auto w-full rounded-lg">
-                <thead>
+        <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+            <table class="w-full text-lg bg-gray-100 text-left rtl:text-right text-gray-500">
+                <thead class="text-m bg-gray-300 text-gray-700 uppercase bg-gray-50">
                     <tr>
-                        <th class="px-4 py-2 border-b-2 border-gray-300">Zdjęcie</th>
-                        <th class="px-4 py-2 border-b-2 border-gray-300">Nazwa</th>
-                        <th class="px-4 py-2 border-b-2 border-gray-300">Kategoria</th>
-                        <th class="px-4 py-2 border-b-2 border-gray-300">Godziny otwarcia</th>
-                        <th class="px-4 py-2 border-b-2 border-gray-300">Czas zwiedzania</th>
-                        <th class="px-4 py-2 border-b-2 border-gray-300">Miasto</th>
-                        <th class="px-4 py-2 border-b-2 border-gray-300">Akcja</th>
+                        <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap"></th>
+                        <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">Nazwa</th>
+                        <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">Kategoria</th>
+                        <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">Godziny otwarcia</th>
+                        <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">Czas zwiedzania</th>
+                        <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">Miasto</th>
+                        <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">Szczegóły</th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach (var item in Model.UserLandmarks)
                     {
-                        <tr class="hover:bg-gray-300">
+                        <tr class="bg-gray-100 border-b hover:bg-gray-150 ">
                             <td class="px-4 py-2 border-b border-gray-300">
-                                <img style="height:90px;width:90px" src="/Uploads/@item.Landmark.ImagePath" alt="Landmark Image">
+                                <img class="w-full h-auto rounded-lg" style="height:100px;width:100px" src="/Uploads/@item.Landmark.ImagePath" alt="Landmark Image">
                             </td>
-                            <td class="px-4 py-2 border-b border-gray-300">@item.Landmark.Name</td>
-                            <td class="px-4 py-2 border-b border-gray-300">@item.Landmark.CategoryList</td>
-                            <td class="px-4 py-2 border-b border-gray-300">@item.Landmark.OpeningHours</td>
-                            <td class="px-4 py-2 border-b border-gray-300">@item.Landmark.TourDuration</td>
-                            <td class="px-4 py-2 border-b border-gray-300">@item.Landmark.City?.Name</td>
-                            <td class="px-4 py-2 border-b border-gray-300">
-                                <form asp-action="RemoveFromUserLandmarks" asp-route-id="@item.LandmarkId" method="post">
-                                    <button type="submit" class="px-4 py-2 btn-red">Usuń</button>
-                                </form>
+                            <td class="px-6 py-4">@item.Landmark.Name</td>
+                            <td class="px-6 py-4">@item.Landmark.CategoryList</td>
+                            <td class="px-6 py-4">@item.Landmark.OpeningHours</td>
+                            <td class="px-6 py-4">@item.Landmark.TourDuration</td>
+                            <td class="px-6 py-4">@item.Landmark.City?.Name</td>
+                            <td class="px-6 py-4">
+                                <a href="/Landmark/Details/@item.Id">
+                                    <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 3">
+                                        <path d="M2 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Zm6.041 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM14 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Z" />
+                                    </svg>
+                                </a>
                             </td>
                         </tr>
                     }
                 </tbody>
             </table>
         </div>
-        <div class="text-primary bg-secondary p-4 rounded border">
+        <div class="text-primary rounded-lg border-1 border-gray-300 p-4 mt-4">
             <div id="mapid" style="height: 400px; width: 100%;"></div>
         </div>
     }
