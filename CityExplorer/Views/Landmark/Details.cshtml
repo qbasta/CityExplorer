@@ -1,215 +1,317 @@
 ﻿@using System.Security.Claims;
 @using Microsoft.AspNetCore.Authorization;
+@using Microsoft.AspNetCore.Identity;
 @model CityExplorer.ViewModels.LandmarkDetailsViewModel
 @inject IAuthorizationService AuthorizationService
+@inject SignInManager<AppUser> SignInManager
+@inject UserManager<AppUser> UserManager
+<link href="https://cdn.jsdelivr.net/npm/flowbite@1.0.0/dist/flowbite.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+<link rel="stylesheet" href="~/css/styles.css" asp-append-version="true" />
 <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-
-
-
 
 @{
     ViewData["Title"] = "Details";
 }
-
-<h1>Details</h1>
-    <div>
-        <h4>Landmark</h4>
-        <hr />
-    
-        <dl class="row">
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.Landmark.Name)
-            </dt>
-            <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.Landmark.Name)
-            </dd>
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.Landmark.CategoryNames)
-            </dt>
-            <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.Landmark.CategoryNames)
-            </dd>
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.Landmark.Description)
-            </dt>
-            <dd class="col-sm-10">
-               @Html.DisplayFor(model => model.Landmark.Description)
-            </dd>
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.Landmark.ImagePath)
-            </dt>
-            <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.Landmark.ImagePath)
-            </dd>
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.Landmark.OpeningHours)
-            </dt>
-            <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.Landmark.OpeningHours)
-            </dd>
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.Landmark.TourDuration)
-            </dt>
-            <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.Landmark.TourDuration)
-            </dd>
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.Landmark.Latitude)
-            </dt>
-            <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.Landmark.Latitude)
-            </dd>
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.Landmark.Longitude)
-            </dt>
-            <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.Landmark.Longitude)
-            </dd>
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.Landmark.City.Name)
-            </dt>
-            <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.Landmark.City.Name)
-            </dd>
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.Landmark.City.Country)
-            </dt>
-            <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.Landmark.City.Country)
-            </dd>
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.Landmark.AverageRating)
-            </dt>
-            <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.Landmark.AverageRating)
-            </dd>
-        </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.Landmark.Id">Edit</a> |
-    <a asp-action="LandmarkList">Back to List</a>
-</div>
-
-<div id="mapid" style="height: 400px; width: 50%; margin: 0 auto;"></div>
-
-<h4>Reviews</h4>
-<button id="showReviews">Pokaż recenzje</button>
-<button id="showAdvice">Pokaż porady</button>
-<button id="showAll">Pokaż wszystkie</button>
-@foreach (var review in Model.Reviews)
-{
-    <div class="review" data-tag="@review.Tag">
-        @if (review.AppUser != null)
-        {
-            <strong>@review.AppUser.FirstName @review.AppUser.LastName</strong>
-        }
-        else
-        {
-            <strong>Unknown User</strong>
-        }
-        @if (review.Tag == "recenzja")
-        {
-            <p>Rating: @review.Rating</p>
-        }
-        <p>Date: @review.Date.ToString("dd-MM-yyyy HH:mm")</p>
-        <p>@review.Text</p>
-        <p>Tag: @review.Tag</p>
-
-        @if ((await AuthorizationService.AuthorizeAsync(User, review.Id, "CanDeleteReview")).Succeeded)
-        {
-            <form asp-action="DeleteReview" method="post">
-                <input type="hidden" name="Id" value="@review.Id" />
-                <input type="hidden" name="LandmarkId" value="@Model.Landmark.Id" />
-                <button type="submit">Delete Review</button>
-            </form>
-        }
+<div class="bg-gray-100 w-7/8 mx-auto border-2 border-gray-900 rounded-lg bg-gray-100">
+    <div class="flex justify-between mt-2 ml-4 mr-4">
+        <button onclick="location.href='@Url.Action("LandmarkList", "Landmark")'" class="btn btn-blue" style="width:auto">Cofnij</button>
+        <a asp-action="Edit" asp-route-id="@Model?.Landmark.Id" class="btn btn-blue" style="width:auto">Edytuj</a>
     </div>
-}
+    <div class="flex justify-center py-4">
+        <h1 class="text-gray text-3xl font-bold">Szczegóły zabytku @Model.Landmark.Name</h1>
+    </div>
+    <div class="bg-gray-150 p-4 grid grid-cols-2 gap-4">
+        <div>
+            <img class="w-auto h-auto border-2 border-gray-900 rounded-lg" style="height:200px;width:200px" src="/Uploads/@Model.Landmark.ImagePath" alt="Landmark Image">
+        </div>
+        <div>
+            <dl class="grid grid-cols-2 gap-4 mt-6">
+                <dt class="col-sm-6">
+                    Średnia ocena
+                </dt>
+                <dd class="col-sm-6">
+                    @{
+                        double rating = Model.Landmark.AverageRating;
+                        int fullStars = (int)rating;
+                        bool halfStar = rating % 1 >= 0.5;
+                        int emptyStars = 5 - fullStars - (halfStar ? 1 : 0);
+                    }
 
-<div class="pagination">
-    @if (Model.CurrentPage > 1)
-    {
-        <a asp-action="Details" asp-route-id="@Model.Landmark.Id" asp-route-page="@(Model.CurrentPage - 1)" asp-route-tag="@ViewBag.Tag">&laquo; Poprzednia</a>
-    }
+                    <div class="flex items-center">
+                        @for (int i = 0; i < fullStars; i++)
+                        {
+                            <div class="relative w-6 h-6">
+                                <svg class="w-full h-full text-yellow-300 me-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 20">
+                                    <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z" />
+                                </svg>
+                            </div>
+                        }
+                        @if (halfStar)
+                        {
+                            <div class="relative w-6 h-6">
+                                <svg class="w-full h-full text-yellow-300 me-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 21 20">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m11.479 1.712 2.367 4.8a.532.532 0 0 0 .4.292l5.294.769a.534.534 0 0 1 .3.91l-3.83 3.735a.534.534 0 0 0-.154.473l.9 5.272a.535.535 0 0 1-.775.563l-4.734-2.49a.536.536 0 0 0-.5 0l-4.73 2.487a.534.534 0 0 1-.775-.563l.9-5.272a.534.534 0 0 0-.154-.473L2.158 8.48a.534.534 0 0 1 .3-.911l5.294-.77a.532.532 0 0 0 .4-.292l2.367-4.8a.534.534 0 0 1 .96.004Z" />
+                                </svg>
+                                <svg class="w-1/2 h-full text-yellow-300 absolute top-0 left-0" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 12 20">
+                                    <path d="M11.707.707A1 1 0 0 0 11 .414a1.6 1.6 0 0 0-1.409.816l-2.525 4.6-5.687.744A1.576 1.576 0 0 0 .065 7.667a1.485 1.485 0 0 0 .456 1.566l4.05 3.552-.95 4.988a1.5 1.5 0 0 0 .567 1.473 1.624 1.624 0 0 0 1.703.18l5.194-2.457a1 1 0 0 0 .915-1V1.414a1 1 0 0 0-.293-.707Z" />
+                                </svg>
+                            </div>
+                        }
+                        @for (int i = 0; i < emptyStars; i++)
+                        {
+                            <svg class="w-6 h-6 text-yellow-300 me-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 21 20">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m11.479 1.712 2.367 4.8a.532.532 0 0 0 .4.292l5.294.769a.534.534 0 0 1 .3.91l-3.83 3.735a.534.534 0 0 0-.154.473l.9 5.272a.535.535 0 0 1-.775.563l-4.734-2.49a.536.536 0 0 0-.5 0l-4.73 2.487a.534.534 0 0 1-.775-.563l.9-5.272a.534.534 0 0 0-.154-.473L2.158 8.48a.534.534 0 0 1 .3-.911l5.294-.77a.532.532 0 0 0 .4-.292l2.367-4.8a.534.534 0 0 1 .96.004Z" />
+                            </svg>
+                        }
+                        <p class="ms-1 text-l font-bold text-gray-700">@Model.Landmark.AverageRating</p>
+                        <p class="ms-1 text-l font-bold text-gray-700">na </p>
+                        <p class="ms-1 text-l font-bold text-gray-700">5</p>
+                    </div>
+                </dd>
 
-    Strona @Model.CurrentPage z @Model.TotalPages
+                <dt class="col-sm-6">
+                    Opis zabytku
+                </dt>
+                <dd class="col-sm-6">
+                    @Html.DisplayFor(model => model.Landmark.Description)
+                </dd>
+                <dt class="col-sm-6">
+                    Godziny otwarcia
+                </dt>
+                <dd class="col-sm-6">
+                    @Html.DisplayFor(model => model.Landmark.OpeningHours)
+                </dd>
+                <dt class="col-sm-6">
+                    Czas zwiedzania
+                </dt>
+                <dd class="col-sm-6">
+                    @Html.DisplayFor(model => model.Landmark.TourDuration)
+                </dd>
+                <dt class="col-sm-6">
+                    Nazwa miasta
+                </dt>
+                <dd class="col-sm-6">
+                    @Html.DisplayFor(model => model.Landmark.City.Name)
+                </dd>
+                <dt class="col-sm-6">
+                    Nazwa państwa
+                </dt>
+                <dd class="col-sm-6">
+                    @Html.DisplayFor(model => model.Landmark.City.Country)
+                </dd>
+                <dt class="col-sm-6">
+                    Kategorie
+                </dt>
+                <dd class="col-sm-6">
+                    @foreach (var category in ViewBag.CategoryList)
+                    {
+                        <div>@category.Text</div>
+                    }
+                </dd>
+            </dl>
+        </div>
+    </div>
 
-    @if (Model.CurrentPage < Model.TotalPages)
-    {
-        <a asp-action="Details" asp-route-id="@Model.Landmark.Id" asp-route-page="@(Model.CurrentPage + 1)" asp-route-tag="@ViewBag.Tag">Następna &raquo;</a>
-    }
+    <br />
+    <h3 class="flex justify-center py-4 text-gray text-2xl font-bold">Lokalizacja zabytku na mapie</h3>
+    <div class="border-2 border-gray-900 rounded-lg" id="mapid" style="height: 400px; width: 50%; margin: 0 auto;"></div>
+
+    <div class="col-span-2 rounded-lg p-4 mt-4">
+        <div class="flex justify-center py-4">
+            <h3 class="text-gray text-3xl font-bold">Komentarze i opinie</h3>
+        </div>
+        <div class="flex justify-center mt-2 mb-2">
+            <button type="button" class="btn-blue mr-2" id="showReviews">Pokaż recenzje</button>
+            <button type="button" class="btn-blue mr-2" id="showAdvice">Pokaż porady</button>
+            <button type="button" class="btn-blue" id="showAll">Pokaż wszystkie</button>
+        </div>
+        <div class="flex justify-center">
+            <div class="bg-gray-200 border-2 border-gray-800 rounded-lg p-4 w-2/3">
+                @foreach (var review in Model.Reviews)
+                {
+                    <div class="review shadow-lg bg-gray-200 border-2 border-gray-800 rounded-lg p-4 mb-2" data-tag="@review.Tag">
+                        @if (review.AppUser != null)
+                        {
+                            <div class="flex items-center mb-2">
+                                <img class="w-12 h-12 me-2 rounded-full" style="object-fit: cover; border-radius: 30px" src="~/Uploads/@review.AppUser.ProfilePicture">
+                                <div>
+                                    <p class="block text-m font-bold text-gray-900">@review.AppUser.FirstName @review.AppUser.LastName <time class="block text-m text-gray-900">(@review.Date.ToString("dd-MM-yyyy HH:mm"))</time></p>
+                                </div>
+                            </div>
+
+                        }
+                        else
+                        {
+                            <strong>Unknown User</strong>
+                        }
+                        @if (review.Tag == "recenzja")
+                        {
+                            double rating1 = review.Rating;
+                            int fullStars1 = (int)rating1;
+                            bool halfStar1 = rating1 % 1 >= 0.5;
+                            int emptyStars1 = 5 - fullStars1 - (halfStar1 ? 1 : 0);
+
+                            <div class="flex items-center mb-2">
+                                @for (int i = 0; i < fullStars1; i++)
+                                {
+                                    <div class="relative w-6 h-6">
+                                        <svg class="w-full h-full text-yellow-300 me-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 20">
+                                            <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z" />
+                                        </svg>
+                                    </div>
+                                }
+                                @if (halfStar1)
+                                {
+                                    <div class="relative w-6 h-6">
+                                        <svg class="w-full h-full text-yellow-300 me-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 21 20">
+                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m11.479 1.712 2.367 4.8a.532.532 0 0 0 .4.292l5.294.769a.534.534 0 0 1 .3.91l-3.83 3.735a.534.534 0 0 0-.154.473l.9 5.272a.535.535 0 0 1-.775.563l-4.734-2.49a.536.536 0 0 0-.5 0l-4.73 2.487a.534.534 0 0 1-.775-.563l.9-5.272a.534.534 0 0 0-.154-.473L2.158 8.48a.534.534 0 0 1 .3-.911l5.294-.77a.532.532 0 0 0 .4-.292l2.367-4.8a.534.534 0 0 1 .96.004Z" />
+                                        </svg>
+                                        <svg class="w-1/2 h-full text-yellow-300 absolute top-0 left-0" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 12 20">
+                                            <path d="M11.707.707A1 1 0 0 0 11 .414a1.6 1.6 0 0 0-1.409.816l-2.525 4.6-5.687.744A1.576 1.576 0 0 0 .065 7.667a1.485 1.485 0 0 0 .456 1.566l4.05 3.552-.95 4.988a1.5 1.5 0 0 0 .567 1.473 1.624 1.624 0 0 0 1.703.18l5.194-2.457a1 1 0 0 0 .915-1V1.414a1 1 0 0 0-.293-.707Z" />
+                                        </svg>
+                                    </div>
+                                }
+                                @for (int i = 0; i < emptyStars1; i++)
+                                {
+                                    <svg class="w-6 h-6 text-yellow-300 me-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 21 20">
+                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m11.479 1.712 2.367 4.8a.532.532 0 0 0 .4.292l5.294.769a.534.534 0 0 1 .3.91l-3.83 3.735a.534.534 0 0 0-.154.473l.9 5.272a.535.535 0 0 1-.775.563l-4.734-2.49a.536.536 0 0 0-.5 0l-4.73 2.487a.534.534 0 0 1-.775-.563l.9-5.272a.534.534 0 0 0-.154-.473L2.158 8.48a.534.534 0 0 1 .3-.911l5.294-.77a.532.532 0 0 0 .4-.292l2.367-4.8a.534.534 0 0 1 .96.004Z" />
+                                    </svg>
+                                }
+                                <p class="ms-1 text-l font-bold text-gray-700">@rating1</p>
+                                <p class="ms-1 text-l font-bold text-gray-700">na </p>
+                                <p class="ms-1 text-l font-bold text-gray-700">5</p>
+                            </div>
+                        }
+                        <hr>
+                        <p class="text-m font-semibold">@review.Text</p>
+
+                        @if ((await AuthorizationService.AuthorizeAsync(User, review.Id, "CanDeleteReview")).Succeeded)
+                        {
+                            <form asp-action="DeleteReview" method="post">
+                                <input type="hidden" name="Id" value="@review.Id" />
+                                <input type="hidden" name="LandmarkId" value="@Model.Landmark.Id" />
+                                <button class="btn btn-red" type="submit">Usuń komentarz</button>
+                            </form>
+                        }
+                    </div>
+                }
+                <div class="flex justify-center mt-2 mb-2">
+                <div class="pagination">
+                    @if (Model.CurrentPage > 1)
+                    {
+                        <a asp-action="Details" asp-route-id="@Model.Landmark.Id" asp-route-page="@(Model.CurrentPage - 1)" asp-route-tag="@ViewBag.Tag">&laquo; Poprzednia</a>
+                    }
+
+                    Strona @Model.CurrentPage z @Model.TotalPages
+
+                    @if (Model.CurrentPage < Model.TotalPages)
+                    {
+                        <a asp-action="Details" asp-route-id="@Model.Landmark.Id" asp-route-page="@(Model.CurrentPage + 1)" asp-route-tag="@ViewBag.Tag">Następna &raquo;</a>
+                    }
+                </div>
+                </div>
+            </div>
+        </div>
+        <div class="flex justify-center mt-4">
+            <div class="bg-gray-200 border-2 border-gray-800 rounded-lg p-4 w-2/3">
+                @if (User.Identity.IsAuthenticated)
+                {
+                    <div class="flex justify-center py-2">
+                        <h4 class="text-gray text-xl font-bold">Podziel się swoimi doświadczeniami!</h4>
+                    </div>
+                    <form asp-action="AddReview" method="post">
+                        <div class="form-group mb-2">
+                            <label class="font-bold" for="Tag">Tag:</label>
+                            <select class="form-control" name="Tag" required id="tagSelect">
+                                <option value="recenzja">Recenzja</option>
+                                <option value="porada">Porada</option>
+                            </select>
+                        </div>
+                        <div class="w-full mb-4 border border-gray-200 rounded-lg bg-gray-50">
+                            <input type="hidden" name="LandmarkId" value="@Model.Landmark.Id" />
+                            <div class="form-group" id="ratingDiv">
+                                <label class="font-bold" for="Rating">Ocena:</label>
+                                <select class="form-control" name="Rating" id="ratingInput" required>
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                    <option value="5">5</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="sr-only" for="Text">Komentarz:</label>
+                                <textarea id="comment" rows="4" class="w-full px-0 text-sm text-gray-900 bg-white border-0 form-control" placeholder="Dodaj komentarz..." name="Text" required></textarea>
+                            </div>
+                            <div class="flex items-center justify-between px-3 py-2 border-t">
+                                <button type="submit" class="inline-flex items-center py-2.5 px-4 btn btn-blue">Dodaj komentarz</button>
+                            </div>
+                        </div>
+                    </form>
+                    <script>
+                        document.getElementById('tagSelect').addEventListener('change', function () {
+                            if (this.value == 'recenzja') {
+                                document.getElementById('ratingInput').required = true;
+                                document.getElementById('ratingDiv').style.display = 'block';
+                            } else {
+                                document.getElementById('ratingInput').required = false;
+                                document.getElementById('ratingDiv').style.display = 'none';
+                            }
+                        });
+                    </script>
+                }
+                else
+                {
+                    <div class="flex justify-center py-2">
+                        <h4 class="text-gray text-xl font-bold">Zaloguj się, aby dodać komentarz!</h4>
+                    </div>
+                    <div class="flex justify-center">
+                        <a href="/Identity/Account/Login" class="btn-blue">Zaloguj się</a>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
 </div>
-
-@if (User.Identity.IsAuthenticated)
-{
-    <h4>Add Review</h4>
-    <form asp-action="AddReview" method="post">
-        <input type="hidden" name="LandmarkId" value="@Model.Landmark.Id" />
-        <div class="form-group" id="ratingDiv">
-            <label for="Rating">Rating:</label>
-            <input type="number" class="form-control" name="Rating" min="1" max="5" id="ratingInput" required />
-        </div>
-        <div class="form-group">
-            <label for="Text">Comment:</label>
-            <textarea class="form-control" name="Text" required></textarea>
-        </div>
-        <div class="form-group">
-            <label for="Tag">Tag:</label>
-            <select class="form-control" name="Tag" required id="tagSelect">
-                <option value="recenzja">Recenzja</option>
-                <option value="porada">Porada</option>
-            </select>
-        </div>
-        <button type="submit" class="btn btn-primary">Submit Review</button>
-    </form>
-    <script>
-        document.getElementById('tagSelect').addEventListener('change', function () {
-            if (this.value == 'recenzja') {
-                document.getElementById('ratingInput').required = true;
-                document.getElementById('ratingDiv').style.display = 'block';
-            } else {
-                document.getElementById('ratingInput').required = false;
-                document.getElementById('ratingDiv').style.display = 'none';
-            }
-        });
-    </script>
-}
-
 <script>
+    // Przechowaj wybrany filtr w localStorage
     document.getElementById('showReviews').addEventListener('click', function () {
-        var reviews = document.getElementsByClassName('review');
-        for (var i = 0; i < reviews.length; i++) {
-            if (reviews[i].getAttribute('data-tag') == 'recenzja') {
-                reviews[i].style.display = 'block';
-            } else {
-                reviews[i].style.display = 'none';
-            }
-        }
+        localStorage.setItem('selectedFilter', 'recenzja');
+        filterReviews();
     });
 
     document.getElementById('showAdvice').addEventListener('click', function () {
+        localStorage.setItem('selectedFilter', 'porada');
+        filterReviews();
+    });
+
+    document.getElementById('showAll').addEventListener('click', function () {
+        localStorage.setItem('selectedFilter', 'all');
+        filterReviews();
+    });
+
+    // Filtruj recenzje na podstawie wybranego filtra
+    function filterReviews() {
+        var selectedFilter = localStorage.getItem('selectedFilter');
         var reviews = document.getElementsByClassName('review');
         for (var i = 0; i < reviews.length; i++) {
-            if (reviews[i].getAttribute('data-tag') == 'porada') {
+            if (selectedFilter == 'all' || reviews[i].getAttribute('data-tag') == selectedFilter) {
                 reviews[i].style.display = 'block';
             } else {
                 reviews[i].style.display = 'none';
             }
         }
-    });
+    }
 
-    document.getElementById('showAll').addEventListener('click', function () {
-        var reviews = document.getElementsByClassName('review');
-        for (var i = 0; i < reviews.length; i++) {
-            reviews[i].style.display = 'block';
-        }
-    });
+    // Wywołaj funkcję filterReviews podczas ładowania strony
+    window.onload = filterReviews;
 </script>
 
 @section Scripts {
     <script>
-        var map = L.map('mapid').setView([@Model.Landmark.Latitude, @Model.Landmark.Longitude], 13);
+        var map = L.map('mapid').setView([@Model.Landmark.Latitude, @Model.Landmark.Longitude], 16);
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             maxZoom: 30,
         }).addTo(map);

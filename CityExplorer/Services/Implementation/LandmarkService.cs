@@ -169,7 +169,7 @@ namespace CityExplorer.Services.Implementation
         {
             return _context.Landmarks.Select(l => l.City.Country).Distinct().ToList();
         }
-
+       
         public List<int> GetCategoryByLandmarkId(int landmarkId)
         {
             var categoryIds = _context.LandmarkCategories.Where(lc => lc.LandmarkId == landmarkId).Select(lc => lc.CategoryId).ToList();

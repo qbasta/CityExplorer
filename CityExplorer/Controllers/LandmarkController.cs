@@ -187,41 +187,55 @@ using System.Security.Claims;
                 return RedirectToAction("Details", new { id = model.LandmarkId });
             }
 
-            public IActionResult Details(int? id, int page = 1, string tag = null)
+        public IActionResult Details(int? id, int page = 1, string tag = null)
+        {
+            if (id == null || _context.Landmarks == null)
             {
-                if (id == null || _context.Landmarks == null)
-                {
-                    return NotFound();
-                }
-
-                var landmark = _context.Landmarks
-                    .Include(l => l.City)
-                    .Include(l => l.Reviews)
-                    .ThenInclude(l => l.AppUser)// Include reviews
-                    .FirstOrDefault(m => m.Id == id);
-
-                if (landmark == null)
-                {
-                    return NotFound();
-                }
-
-                int pageSize = 5; // ustal liczbę recenzji na stronę
-                var reviews = landmark.Reviews.Where(r => tag == null || r.Tag == tag).Skip((page - 1) * pageSize).Take(pageSize); // pobierz odpowiednie recenzje
-
-                var model = new LandmarkDetailsViewModel
-                {
-                    Landmark = landmark,
-                    Reviews = reviews,
-                    PageSize = pageSize,
-                    CurrentPage = page,
-                    TotalPages = (int)Math.Ceiling(landmark.Reviews.Count() / (double)pageSize)
-                };
-
-                return View(model);
+                return NotFound();
             }
 
+            var landmark = _context.Landmarks
+                .Include(l => l.City)
+                .Include(l => l.Reviews)
+                .ThenInclude(l => l.AppUser)// Include reviews
+                .FirstOrDefault(m => m.Id == id);
 
-            public IActionResult LandmarkList(string searchTerm, string cityFilter, string countryFilter)
+            if (landmark == null)
+            {
+                return NotFound();
+            }
+
+            int pageSize = 5; // ustal liczbę recenzji na stronę
+            var reviews = landmark.Reviews.Where(r => tag == null || r.Tag == tag).Skip((page - 1) * pageSize).Take(pageSize); // pobierz odpowiednie recenzje
+
+            var model = new LandmarkDetailsViewModel
+            {
+                Landmark = landmark,
+                Reviews = reviews,
+                PageSize = pageSize,
+                CurrentPage = page,
+                TotalPages = (int)Math.Ceiling(landmark.Reviews.Count() / (double)pageSize)
+            };
+
+            // Pobieramy kategorie zabytku
+            var landmarkCategories = _context.LandmarkCategories
+                .Where(lc => lc.LandmarkId == id)
+                .Include(lc => lc.Category)
+                .ToList();
+
+            // Przekazujemy listę kategorii do widoku za pomocą ViewBag
+            ViewBag.CategoryList = landmarkCategories.Select(lc => new SelectListItem
+            {
+                Text = lc.Category.Name,
+                Value = lc.Category.Id.ToString()
+            });
+
+            return View(model);
+        }
+
+
+
+        public IActionResult LandmarkList(string searchTerm, string cityFilter, string countryFilter)
             {
                 var cities = _landmarkService.GetUniqueCities();
                 var countries = _landmarkService.GetUniqueCountries();

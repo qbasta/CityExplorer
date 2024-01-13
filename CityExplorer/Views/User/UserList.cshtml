@@ -2,7 +2,7 @@
 
 
 
-<div class="bg-gray-100 border-2 border-gray-900 rounded-lg shadow-lg px-6 py-4">
+<div class="bg-gray-100 border-2 w-4/5 mx-auto border-gray-900 rounded-lg shadow-lg px-6 py-4">
     @if (Model.UserLandmarks.Count == 0)
     {
         <div class="flex items-center justify-center h-screen">
@@ -16,13 +16,16 @@
     else
     {
         <div class="mt-4">
+            <div class="flex justify-center py-4">
+                <h1 class="text-gray text-3xl font-bold">Twoja lista zabytków</h1>
+            </div>
             <form action="SaveUserList" method="post" class="flex flex-col mb-8">
                 <div class="relative flex flex-col">
-                    <label for="listName" class="text-gray text-sm font-semibold mb-1">Nazwa pod którą chcesz zapisać listę:</label>
+                    <label for="listName" class="text-gray text-xl font-bold mb-1">Nazwa pod którą chcesz zapisać listę:</label>
                     <input type="text" class="px-4 py-2 rounded border border-gray-300 mb-2 w-56" id="listName" name="name" placeholder="Nazwa listy" required>
                 </div>
                 <div class="relative flex flex-col mt-2">
-                    <label for="listDescription" class="text-gray text-sm font-semibold mb-1">Opis trasy:</label>
+                    <label for="listDescription" class="text-gray text-xl font-bold mb-1">Opis trasy:</label>
                     <input type="text" class="px-4 py-2 rounded border border-gray-300 h-24" id="listDescription" name="description" placeholder="Opis trasy" required>
                     <button type="submit" class="px-10 py-3 font-bold text-lg btn-green mt-4 text-center self-end">Zapisz listę</button>
                 </div>
@@ -34,7 +37,7 @@
                     <tr>
                         <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap"></th>
                         <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">Nazwa</th>
-                        <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">Kategoria</th>
+                        <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">Ocena</th>
                         <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">Godziny otwarcia</th>
                         <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">Czas zwiedzania</th>
                         <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">Miasto</th>
@@ -49,12 +52,19 @@
                                 <img class="w-full h-auto rounded-lg" style="height:100px;width:100px" src="/Uploads/@item.Landmark.ImagePath" alt="Landmark Image">
                             </td>
                             <td class="px-6 py-4">@item.Landmark.Name</td>
-                            <td class="px-6 py-4">@item.Landmark.CategoryList</td>
+                            <td class="px-6 py-4">
+                                <div class="flex items-center">
+                                    <svg class="w-6 h-6 text-yellow-300 me-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 20">
+                                        <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z" />
+                                    </svg>
+                                    <p class="ms-2 text-m text-gray-900">@item.Landmark.AverageRating</p>
+                                </div>
+                            </td>
                             <td class="px-6 py-4">@item.Landmark.OpeningHours</td>
                             <td class="px-6 py-4">@item.Landmark.TourDuration</td>
                             <td class="px-6 py-4">@item.Landmark.City?.Name</td>
                             <td class="px-6 py-4">
-                                <a href="/Landmark/Details/@item.Id">
+                                <a href="/Landmark/Details/@item.Landmark.Id">
                                     <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 3">
                                         <path d="M2 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Zm6.041 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM14 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Z" />
                                     </svg>

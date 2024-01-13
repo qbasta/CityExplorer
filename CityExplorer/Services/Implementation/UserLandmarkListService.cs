@@ -165,6 +165,9 @@ namespace CityExplorer.Services.Implementation
                 .Include(ull => ull.UserLandmarks)
                     .ThenInclude(ul => ul.Landmark)
                         .ThenInclude(l => l.City)
+                .Include(ull => ull.UserLandmarks)
+                    .ThenInclude(ul => ul.Landmark)
+                        .ThenInclude(l => l.Reviews)
                 .FirstOrDefault(ull => ull.AppUserId == userId && !ull.IsSaved);
 
             // Jeśli userList jest null, zwróć nową, pustą listę
@@ -185,8 +188,11 @@ namespace CityExplorer.Services.Implementation
         {
             return _context.UserLandmarkLists
                 .Include(ull => ull.UserLandmarks)
-                .ThenInclude(ul => ul.Landmark)
-                .ThenInclude(l => l.City)
+                    .ThenInclude(ul => ul.Landmark)
+                        .ThenInclude(l => l.City)
+                .Include(ull => ull.UserLandmarks)
+                    .ThenInclude(ul => ul.Landmark)
+                        .ThenInclude(l => l.Reviews)
                 .Where(ull => ull.AppUserId == userId && ull.IsSaved)
                 .ToList();
         }
