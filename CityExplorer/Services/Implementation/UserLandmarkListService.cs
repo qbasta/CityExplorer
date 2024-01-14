@@ -145,6 +145,7 @@ namespace CityExplorer.Services.Implementation
             var userLandmarkLists = _context.UserLandmarkLists
                 .Include(ull => ull.UserLandmarks)
                 .ThenInclude(ul => ul.Landmark)
+                .Where(ull => ull.IsPublic) // Tylko publiczne listy
                 .ToList();
 
             var userLandmarks = _context.UserLandmarks
@@ -153,7 +154,7 @@ namespace CityExplorer.Services.Implementation
 
             var viewModel = new UserLandmarkListViewModel
             {
-                UserLandmarks = userLandmarks
+                UserLandmarkLists = userLandmarkLists // Przypisz listy zabytków do modelu widoku
             };
 
             return viewModel;
