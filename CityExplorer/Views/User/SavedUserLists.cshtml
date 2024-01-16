@@ -1,0 +1,113 @@
+﻿@model List<CityExplorer.Models.UserLandmarkList>
+
+@foreach (var list in Model.OrderByDescending(l => l.CreatedAt))
+{
+<div class="flex justify-center p-4">
+        <div class="bg-gray-100 border-2 border-gray-900 shadow-lg rounded-lg w-5/6 p-8">
+        <div class="bg-gray-200 px-8 py-6 rounded-t-lg">
+            <h2 class="text-3xl font-bold mb-2">@list.Name</h2>
+            <h3 class="text-lg text-gray-500 mb-4">(@list.CreatedAt.ToString("dd-MM-yyyy HH:mm"))</h3>
+            <p class="mb-4 text-lg w-2/3">@list.Description</p>
+            </div>
+            <div class="bg-white px-8 py-6 rounded-b-lg flex flex-col items-end">
+                    <form class="mr-4" asp-action="RemoveSavedUserList" method="post">
+                        <input type="hidden" name="listId" value="@list.Id" />
+                    <button type="submit" class="btn-red font-bold px-5 py-3">Usuń listę</button>
+                    </form>
+                    <form class="mr-4" asp-action="MakeUserListPublic" method="post">
+                        <input type="hidden" name="listId" value="@list.Id" />
+                    <button type="submit" class="btn-blue font-bold px-5 py-3">Udostępnij listę</button>
+                    </form>
+            </div>
+                <div class="bg-white px-4 py-6 rounded-b-lg">
+                    <table class="w-full border border-gray-300">
+                        <thead class="text-xs text-gray-700 uppercase bg-gray-200">
+                            <tr>
+                                <th class="px-4 py-2">Zdjęcie</th>
+                                <th class="px-4 py-2">Nazwa</th>
+                                <th class="px-4 py-2">Kategoria</th>
+                                <th class="px-4 py-2">Godziny otwarcia</th>
+                                <th class="px-4 py-2">Czas zwiedzania</th>
+                                <th class="px-4 py-2">Miasto</th>
+                                <th class="px-4 py-2"></th>
+                            </tr>
+                        </thead>
+                        @foreach (var item in list.UserLandmarks)
+                        {
+                            <tr class="bg-white border-b">
+                                <td class="px-4 py-2"><img class="h-24 w-24 object-cover" style="height:90px;width:90px" src="/Uploads/@item.Landmark.ImagePath" /></td>
+                                <td class="px-4 py-2">@item.Landmark.Name</td>
+                                <td class="px-4 py-2">
+                                <div class="flex items-center">
+                                    <svg class="w-6 h-6 text-yellow-300 me-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 20">
+                                        <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z" />
+                                    </svg>
+                                    <p class="ms-2 text-m text-gray-900">@item.Landmark.AverageRating</p>
+                                </div>
+                                </td>
+                                <td class="px-4 py-2">@item.Landmark.OpeningHours</td>
+                                <td class="px-4 py-2">@item.Landmark.TourDuration</td>
+                                <td class="px-4 py-2">@item.Landmark.City?.Name</td>
+                                <td class="px-4 py-2">
+                                    <form asp-action="RemoveFromUserLandmarks" method="post">
+                                        <input type="hidden" name="landmarkId" value="@item.LandmarkId" />
+                                        <button type="submit" class="btn-red">Usuń</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        }
+                    </table>
+                        <div class="w-full rounded-lg border mt-4">
+                            <div class="text-primary bg-secondary p-4 rounded border" id="mapid_@list.Id" style="height: 400px; width: 100%;"></div>
+                        </div>
+                    </div>
+                </div>
+            <script>
+                window.onload = function () {
+                @foreach (var innerList in Model.OrderByDescending(l => l.CreatedAt))
+                {
+                    if (innerList.UserLandmarks.Count > 0)
+                    {
+                        <text>
+                                        var map = L.map('mapid_@innerList.Id').setView([@innerList.UserLandmarks[0].Landmark.Latitude, @innerList.UserLandmarks[0].Landmark.Longitude], 13);
+                            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                                maxZoom: 19,
+                            }).addTo(map);
+                            var waypoints = [];
+                            @foreach (var item in innerList.UserLandmarks)
+                            {
+                                <text>
+                                                var latLng = L.latLng(@item.Landmark.Latitude, @item.Landmark.Longitude);
+                                L.marker(latLng, { draggable: false }).addTo(map)
+                                    .bindPopup('Zabytek: @item.Landmark.Name');
+                                waypoints.push(latLng);
+                                </text>
+                            }
+                                        var control = L.Routing.control({
+                                waypoints: waypoints,
+                                routeWhileDragging: false,
+                                addWaypoints: false,
+                                router: L.Routing.osrmv1({
+                                    serviceUrl: 'https://router.project-osrm.org/route/v1',
+                                    profile: 'foot',
+                                }),
+                                show: true,
+                                createMarker: function () { return null; },
+                                edit: false
+                            }).addTo(map);
+                        </text>
+                    }
+                }
+                }
+            </script>
+</div>
+}
+
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.css" />
+<script src="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+<link rel="stylesheet" href="~/css/styles.css" asp-append-version="true" />
+

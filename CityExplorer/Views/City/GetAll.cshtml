@@ -1,40 +1,41 @@
 ﻿@model IEnumerable<CityExplorer.Models.City>
+<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+<link rel="stylesheet" href="~/css/styles.css" asp-append-version="true" />
 
-<div class="container pt-5">
-    <div class="row">
-        <div class="col-md-6">
-            <h3>Cities</h3>
 
-            @if (Model.Any())
-            {
-                <div class="card mb-3">
-                    <div class="card-header">List of Existing Cities</div>
-                    <div class="card-body">
-                        <table class="table table-bordered">
-                            <thead>
-                                <tr>
-                                    <th>Name</th>
-                                    <th>Country</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach (var city in Model)
-                                {
-                                    <tr>
-                                        <td>@city.Name</td>
-                                        <td>@city.Country</td>
-                                        <td>
+<button onclick="location.href='@Url.Action("Index", "Administrator")'" class="btn-blue" style="width:auto">Cofnij</button>
+<br />
+<hr />
+<br />
+@if (Model.Any())
+    {
+        <div class="flex justify-center">
+        <div class="w-full max-w-max mt-8">
+            <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+                <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                    <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                        <tr class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
+                            <th class="py-2 px-4">Państwo</th>
+                            <th class="py-2 px-4">Miasto</th>
+                            <th class="py-2 px-4 text-center">Akcje</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var city in Model)
+                            {
+                            <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                                        <td class="px-4 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">@city.Country</td>
+                                        <td class="px-4 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">@city.Name</td>
+                                        <td class="px-4 py-2 text-center">
                                             <form asp-action="Delete" asp-route-id="@city.Id" method="post">
-                                                <a asp-action="Update" asp-route-id="@city.Id" class="btn btn-primary">Edit City</a>
                                                 <span id="confirmDeleteSpan_@city.Id" style="display:none">
-                                                    <span>Are you sure you want to delete?</span>
-                                                    <button type="submit" class="btn btn-danger">Yes</button>
-                                                    <button type="button" class="btn btn-primary" onclick="confirmDelete('@city.Id',false)">No</button>
+                                                    <span>Czy na pewno chcesz usunąć?</span>
+                                                    <button type="submit" class="btn-red">Tak</button>
+                                                    <button type="button" class="btn-green" onclick="confirmDelete('@city.Id',false)">Nie</button>
                                                 </span>
-
+                                                <button type="button" onclick="location.href='@Url.Action("Update","City")'" class="btn-green">Edytuj</button>
                                                 <span id="deleteSpan_@city.Id">
-                                                    <button type="button" class="btn btn-danger" onclick="confirmDelete('@city.Id',true)">Delete</button>
+                                                    <button type="button" class="btn-red" onclick="confirmDelete('@city.Id',true)">Usuń</button>
                                                 </span>
                                             </form>
                                         </td>
@@ -43,21 +44,26 @@
                             </tbody>
                         </table>
                     </div>
-                </div>
-                <a asp-action="Add" class="btn btn-primary" style="width:auto">Add new city</a>
-            }
-            else
-            {
-                <div class="card">
-                    <div class="card-header">No cities created yet</div>
-                </div>
-                <div class="card-body">
-                    <h5 class="card-title">Use the button below to create a new city</h5>
-                    <a asp-action="Add" class="btn btn-primary" style="width:auto">Add new city</a>
-                </div>
-            }
+            </div>
         </div>
-    </div>
+        }   
+    else
+    {
+                <div class="flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800" role="alert">
+                    <svg class="flex-shrink-0 inline w-4 h-4 me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z" />
+                    </svg>
+                    <span class="sr-only">Info</span>
+                    <div>
+                        <span class="font-medium"></span> Brak miast i krajów do wyświetlenia!
+                    </div>
+                </div>
+            }
+<br />
+<hr />
+<br />
+<div class="flex space-x-2 md:space-x-8">
+    <button onclick="location.href='@Url.Action("Add", "City")'" class="btn-blue" style="width:auto">Dodaj miasto i kraj</button>
 </div>
 
 @section Scripts{

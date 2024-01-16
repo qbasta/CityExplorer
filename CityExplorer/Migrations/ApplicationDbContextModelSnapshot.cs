@@ -4,19 +4,16 @@ using CityExplorer.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace CityExplorer.Data.Migrations
+namespace CityExplorer.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20231205224824_ReviewBombing")]
-    partial class ReviewBombing
+    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
     {
-        /// <inheritdoc />
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -158,7 +155,12 @@ namespace CityExplorer.Data.Migrations
                     b.Property<string>("ImagePath")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Location")
+                    b.Property<string>("Latitude")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Longitude")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
@@ -217,6 +219,9 @@ namespace CityExplorer.Data.Migrations
                     b.Property<int>("Rating")
                         .HasColumnType("int");
 
+                    b.Property<string>("Tag")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Text")
                         .HasColumnType("nvarchar(max)");
 
@@ -231,33 +236,23 @@ namespace CityExplorer.Data.Migrations
 
             modelBuilder.Entity("CityExplorer.Models.UserLandmark", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("AppUserId")
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<int>("LandmarkId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("UserRouteId")
+                    b.Property<int>("UserLandmarkListId")
                         .HasColumnType("int");
 
-                    b.HasKey("Id");
+                    b.Property<int>("Id")
+                        .HasColumnType("int");
 
-                    b.HasIndex("AppUserId");
+                    b.HasKey("LandmarkId", "UserLandmarkListId");
 
-                    b.HasIndex("LandmarkId");
-
-                    b.HasIndex("UserRouteId");
+                    b.HasIndex("UserLandmarkListId");
 
                     b.ToTable("UserLandmarks");
                 });
 
-            modelBuilder.Entity("CityExplorer.Models.UserRoute", b =>
+            modelBuilder.Entity("CityExplorer.Models.UserLandmarkList", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -266,13 +261,35 @@ namespace CityExplorer.Data.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("AppUserId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsPublic")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsSaved")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SharedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("AppUserId");
 
-                    b.ToTable("UserRoutes");
+                    b.ToTable("UserLandmarkLists");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -410,13 +427,13 @@ namespace CityExplorer.Data.Migrations
 
             modelBuilder.Entity("CityExplorer.Models.Landmark", b =>
                 {
-                    b.HasOne("CityExplorer.Models.City", "Country")
+                    b.HasOne("CityExplorer.Models.City", "City")
                         .WithMany("Landmarks")
                         .HasForeignKey("CityId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Country");
+                    b.Navigation("City");
                 });
 
             modelBuilder.Entity("CityExplorer.Models.LandmarkCategory", b =>
@@ -459,30 +476,30 @@ namespace CityExplorer.Data.Migrations
 
             modelBuilder.Entity("CityExplorer.Models.UserLandmark", b =>
                 {
-                    b.HasOne("CityExplorer.Models.AppUser", "AppUser")
-                        .WithMany()
-                        .HasForeignKey("AppUserId");
-
                     b.HasOne("CityExplorer.Models.Landmark", "Landmark")
                         .WithMany()
                         .HasForeignKey("LandmarkId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("CityExplorer.Models.UserRoute", null)
-                        .WithMany("Landmarks")
-                        .HasForeignKey("UserRouteId");
-
-                    b.Navigation("AppUser");
+                    b.HasOne("CityExplorer.Models.UserLandmarkList", "UserLandmarkList")
+                        .WithMany("UserLandmarks")
+                        .HasForeignKey("UserLandmarkListId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Landmark");
+
+                    b.Navigation("UserLandmarkList");
                 });
 
-            modelBuilder.Entity("CityExplorer.Models.UserRoute", b =>
+            modelBuilder.Entity("CityExplorer.Models.UserLandmarkList", b =>
                 {
                     b.HasOne("CityExplorer.Models.AppUser", "AppUser")
                         .WithMany()
-                        .HasForeignKey("AppUserId");
+                        .HasForeignKey("AppUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("AppUser");
                 });
@@ -558,9 +575,9 @@ namespace CityExplorer.Data.Migrations
                     b.Navigation("Reviews");
                 });
 
-            modelBuilder.Entity("CityExplorer.Models.UserRoute", b =>
+            modelBuilder.Entity("CityExplorer.Models.UserLandmarkList", b =>
                 {
-                    b.Navigation("Landmarks");
+                    b.Navigation("UserLandmarks");
                 });
 #pragma warning restore 612, 618
         }

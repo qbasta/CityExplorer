@@ -68,7 +68,7 @@ namespace CityExplorer.Services.Implementation
                                           List<int> categoryFilter = null, string cityFilter = "", string countryFilter = "")
         {
             var data = new LandmarkListViewModel();
-            var list = _context.Landmarks.Include(l => l.City).ToList();
+            var list = _context.Landmarks.Include(r => r.Reviews).Include(l => l.City).ToList();
 
             if (!string.IsNullOrEmpty(nameFilter))
             {
@@ -169,7 +169,7 @@ namespace CityExplorer.Services.Implementation
         {
             return _context.Landmarks.Select(l => l.City.Country).Distinct().ToList();
         }
-
+       
         public List<int> GetCategoryByLandmarkId(int landmarkId)
         {
             var categoryIds = _context.LandmarkCategories.Where(lc => lc.LandmarkId == landmarkId).Select(lc => lc.CategoryId).ToList();

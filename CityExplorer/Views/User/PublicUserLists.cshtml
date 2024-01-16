@@ -1,0 +1,145 @@
+﻿@using Microsoft.AspNetCore.Identity;
+@model CityExplorer.ViewModels.UserLandmarkListViewModel
+@inject UserManager<AppUser> UserManager
+
+<div class="bg-gray-200 border-2 border-gray-800 shadow-md rounded-lg p-6">
+    <div class="bg-white shadow-md rounded-lg p-6 mt-4">
+        @if (User.Identity.IsAuthenticated)
+        {
+            <div class="flex justify-center py-2">
+                <h1 class="text-2xl font-bold mb-4 color-gray-800">Publiczne listy zabytków</h1>
+            </div>
+            @foreach (var list in Model.UserLandmarkLists)
+            {
+                <div class="bg-gray-50 mb-4 border-2 border-gray-900 rounded-lg shadow-lg p-4">
+                    <div class="grid grid-cols-3 gap-1">
+                        <div class="col-span-1">
+                            <h2 class="text-2xl text-gray-800 font-bold">@list.Name</h2> 
+                            <p class="text-gray-600">@list.SharedBy</p>
+                            <p class="text-gray-600 mb-2">@list.CreatedAt.ToString("dd-MM-yyyy HH:mm")</p>
+                            <p class="text-gray-600">@list.Description</p>
+                        </div>
+                        <div class="col-span-1">
+                <div class="grid grid-cols-2 gap-4">
+                    @for (int i = 0; i < list.UserLandmarks.Count; i++)
+                    {
+                        var userLandmark = list.UserLandmarks[i];
+                        if (i % 4 == 0)
+                        {
+                            @:<div class="flex flex-col items-center">
+                        }
+                        <div class="flex flex-col items-center">
+                            <img src="/Uploads/@userLandmark.Landmark.ImagePath" class="rounded-lg max-w-1/2 max-h-1/2">
+                            <p class="font-bold">@userLandmark.Landmark.Name</p>
+                        </div>
+                        if ((i + 1) % 4 == 0 || i == list.UserLandmarks.Count - 1)
+                        {
+                            @:</div>
+                        }
+                    }
+                </div>
+            </div>
+                        <div class="col-span-1">
+                            <div class="w-full h-full border-1 border-gray-900 rounded-lg bg-gray-200" id="mapid_@list.Id"></div>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="flex justify-center items-center h-screen bg-gray-300">
+                <div class="bg-white py-8 px-10 rounded-lg shadow-lg">
+                    <h1 class="text-xl font-semibold">Zaloguj się aby skorzystać ze wszystkich możliwości</h1>
+                    <a href="login.html" class="mt-4 flex items-center justify-center bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-700 transition duration-300">
+                        Zaloguj się
+                    </a>
+                    <div class="mt-8">
+                        <h2 class="text-lg font-semibold">Funkcjonalności:</h2>
+                        <ul class="mt-4">
+                            <li class="flex items-center">
+                                <svg class="h-5 w-5 mr-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M12 2a10 10 0 00-7.15 3A10 10 0 002 12c0 5.52 4.48 10 10 10s10-4.48 10-10c0-1.66-.4-3.23-1.15-4.65A10 10 0 0012 2zm0 18c-1.81 0-3.52-.49-5-1.34M12 2v6m0 0v6m0-6h6m-6 0H6"></path>
+                                </svg>
+                                Prywatna lista zabytków
+                            </li>
+                            <li class="flex items-center mt-2">
+                                <svg class="h-5 w-5 mr-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M20 5v14a2 2 0 01-2 2H6a2 2 0 01-2-2V5a2 2 0 012-2h12a2 2 0 012 2zm-2 5h-4m0 0H6m4 0h4m6-4V5m0 0H6m14 0v14h4V5h-4z"></path>
+                                </svg>
+                                Zapisywanie tras w historii
+                            </li>
+                            <li class="flex items-center mt-2">
+                                <svg class="h-5 w-5 mr-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M22 21.55l-4.7-4.7A7 7 0 0012 14V3a7 7 0 00-7 7v4.61M15 13H9"></path>
+                                </svg>
+                                Dodawanie ocen i porad
+                            </li>
+                            <li class="flex items-center mt-2">
+                                <svg class="h-5 w-5 mr-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M12 2a10 10 0 00-7.15 3A10 10 0 002 12c0 5.52 4.48 10 10 10s10-4.48 10-10c0-1.66-.4-3.23-1.15-4.65A10 10 0 0012 2zm0 18c-1.81 0-3.52-.49-5-1.34M12 2v6m0 0v6m0-6h6m-6 0H6"></path>
+                                </svg>
+                                Przeglądanie udostępnionych tras
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        window.onload = function () {
+        @foreach (var innerList in Model.UserLandmarkLists.OrderByDescending(l => l.CreatedAt))
+        {
+            if (innerList.UserLandmarks.Count > 0)
+            {
+                <text>
+                    var map = L.map('mapid_@innerList.Id').setView([@innerList.UserLandmarks[0].Landmark.Latitude, @innerList.UserLandmarks[0].Landmark.Longitude], 13);
+                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    maxZoom: 19,
+                    }).addTo(map);
+                    var waypoints = [];
+                    @foreach (var item in innerList.UserLandmarks)
+                    {
+                        <text>
+                        var latLng = L.latLng(@item.Landmark.Latitude, @item.Landmark.Longitude);
+                        L.marker(latLng, { draggable: false }).addTo(map)
+                        .bindPopup('Zabytek: @item.Landmark.Name');
+                        waypoints.push(latLng);
+                        </text>
+                    }
+                        var control = L.Routing.control({
+                        waypoints: waypoints,
+                        routeWhileDragging: false,
+                        addWaypoints: false,
+                        router: L.Routing.osrmv1({
+                            serviceUrl: 'https://router.project-osrm.org/route/v1',
+                            profile: 'foot',
+                        }),
+                        show: false,
+                        edit: false,
+                        showAlternatives: true,
+                        createMarker: function () { return null; },
+                        lineOptions: {
+                            styles: [{ color: 'red', opacity: 1, weight: 5 }]
+                        }
+                    }).addTo(map);
+                </text>
+            }
+        }
+            }
+    </script>
+}
+
+
+
+<link href="https://cdn.jsdelivr.net/npm/flowbite@1.0.0/dist/flowbite.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.css" />
+<script src="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.js"></script>
+<link rel="stylesheet" href="~/css/styles.css" asp-append-version="true" />

@@ -7,7 +7,6 @@ namespace CityExplorer.Models
     {
         [Required]
         public string Name { get; set; } = "Unknown";
-
         public List<LandmarkCategory> LandmarkCategories { get; set; } = new();
     }
 }

@@ -1,82 +1,79 @@
 ﻿@model CityExplorer.Models.Landmark
-@{
-}
 
-<form class="w-40" asp-action="Add" method="post" enctype="multipart/form-data">
-    <h2 class="pb-10">Dodaj zabytek</h2>
+<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+<link rel="stylesheet" href="~/css/styles.css" asp-append-version="true" />
 
-    <div class="form-group">
-        <label asp-for="Name" class="control-label">Nazwa</label>
-        <input type="text" class="form-control" asp-for="Name">
-    </div>
-    <div class="message-box pd-x-28 error">
-        <span asp-validation-for="Name"> </span>
-    </div>
-
-    <div class="form-group">
-        <label asp-for="ImageFile" class="control-label">Zdjęcie</label>
-        <input type="file" asp-for="ImageFile">
-    </div>
-    <div class="message-box pd-x-28 error">
-        <span asp-validation-for="ImageFile"> </span>
-    </div>
-
-    <div class="form-group">
-        <label asp-for="Categories" class="control-label">Kategoria</label>
-        <select asp-items="Model.CategoryList" class="form-control" asp-for="Categories" multiple></select>
-    </div>
-    <div class="message-box pd-x-28 error">
-        <span asp-validation-for="Categories"> </span>
-    </div>
-
-    <div class="form-group">
-        <label asp-for="TourDuration" class="control-label">Czas zwiedzania</label>
-        <input type="text" class="form-control" asp-for="TourDuration">
-    </div>
-    <div class="message-box pd-x-28 error">
-        <span asp-validation-for="TourDuration"> </span>
-    </div>
-    
-
-    <div class="form-group">
-        <label asp-for="Description" class="control-label">Opis</label>
-        <input type="text" class="form-control" asp-for="Description">
-    </div>
-    <div class="message-box pd-x-28 error">
-        <span asp-validation-for="Description"> </span>
-    </div>
-
-    <div class="form-group">
-        <label asp-for="OpeningHours" class="control-label">Godziny otwarcia</label>
-        <input type="text" class="form-control" asp-for="OpeningHours">
-    </div>
-    <div class="message-box pd-x-28 error">
-        <span asp-validation-for="OpeningHours"> </span>
-    </div>
-    <div class="form-group">
-        <label asp-for="CityId" class="control-label"></label>
-        <select asp-for="CityId" class="form-control" asp-items="ViewBag.City"></select>
-    </div>
-    <div class="message-box pd-x-28 error">
-        <span asp-validation-for="CityId"> </span>
-    </div>
-    <div class="form-group">
-        <label asp-for="CityId" class="control-label"></label>
-        <select asp-for="CityId" class="form-control" asp-items="ViewBag.Country"></select>
-    </div>
-    <div class="message-box pd-x-28 error">
-        <span asp-validation-for="CityId"> </span>
-    </div>
-
+<div class="w-2/3 mx-auto border-2 border-gray-900 rounded-lg bg-gray-100">
+    <h1 class="text-gray text-3xl px-6 py-4">Dodaj nowy zabytek</h1>
     @if (TempData["msg"] != null)
     {
-        <div class="alert mb-1">
-            @TempData["msg"]
+        <div id="alert" class="flex w-full items-center p-4 mb-4 text-green-800 rounded-lg bg-green-50" role="alert">
+            <svg class="flex-shrink-0 inline w-4 h-4 me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z" />
+            </svg>
+            <span class="sr-only">Info</span>
+            <div>
+                <span class="font-medium">Udało się!</span> @TempData["msg"]
+            </div>
+            <button onclick="dismissAlert()" class="ms-auto -mx-1.5 -my-1.5 bg-green-50 text-green-500 rounded-lg focus:ring-2 focus:ring-green-400 p-1.5 hover:bg-green-200 inline-flex items-center justify-center h-8 w-8">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </button>
         </div>
-    }
+    }   
+    <form class="mx-auto rounded-lg bg-gray-100" asp-action="Add" method="post" enctype="multipart/form-data">
+    <div class="grid grid-cols-2">
+        <div class="p-6">
+            <label class="block text-gray text-lg mb-2 control-label" asp-for="Name">Nazwa zabytku</label>
+                <input asp-for="Name" class="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" type="text" name="Name" placeholder="Wprowadź nazwę zabytku">
 
-    <div class="input-container">
-        <button class="bg-violet-500 hover:bg-violet-600 active:bg-violet-700 focus:outline-none focus:ring focus:ring-violet-300 ..." type="submit">Save</button>
-        <a class="btn btn-sec" href="/Landmark/LandmarkList">All records</a>
+            <label class="block text-gray text-lg mb-2 control-label" asp-for="Categories">Kategorie</label>
+                <select asp-items="Model.CategoryList" class="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" asp-for="Categories" multiple required></select>
+
+            <label class="block text-gray text-lg mb-2 control-label" asp-for="OpeningHours">Godziny otwarcia</label>
+                <input class="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" asp-for="OpeningHours" id="openinghours" type="text" name="openinghours" placeholder="Wprowadź godziny otwarcia" required />
+
+            <label class="block text-gray text-lg mb-2 control-label" asp-for="TourDuration">Czas zwiedzania</label>
+                <input class="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" asp-for="TourDuration" id="tourduration" type="text" name="tourduration" placeholder="Wprowadź czas zwiedzania" required />
+
+        </div>
+        <div class="p-6">
+            <label class="block text-gray text-lg mb-2 control-label" asp-for="Description">Opis zabytku</label>
+                <textarea class="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" asp-for="Description" name="Description" rows="5" placeholder="Wprowadź opis zabytku"></textarea>
+
+            <div class="flex space-x-4">
+                <div class="w-1/2">
+                    <label class="block text-gray text-lg mb-2 control-label" asp-for="Latitude">Szerokość geograficzna</label>
+                    <input type="number" step="0.0000000000001" class="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" asp-for="Latitude" required> 
+                </div>
+
+                <div class="w-1/2">
+                    <label class="block text-gray text-lg mb-2 control-label" asp-for="Longitude">Długość geograficzna</label>
+                    <input type="number" step="0.0000000000001" class="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" asp-for="Longitude" required>
+                </div>
+            </div>
+
+            <label class="block text-gray text-lg mb-2 control-label" asp-for="CityId">Miasto</label>
+            <select asp-items="ViewBag.City" class="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" asp-for="CityId"></select>
+
+            <label class="block text-gray text-lg mb-2 control-label" asp-for="CityId">Kraj</label>
+            <select asp-items="ViewBag.Country" class="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" asp-for="CityId"></select>
+        </div>
     </div>
-</form>
+    <div class="p-6">
+        <label class="block text-gray text-lg mb-2" asp-for="ImageFile">Dodaj zdjęcie zabytku</label>
+        <input type="file" asp-for="ImageFile" class="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
+    </div>
+    <div class="input-container p-6">
+        <button class="btn-green text-white" type="submit">Save</button>
+        <a class="btn-blue" href="/Landmark/LandmarkList">All records</a>
+    </div>
+    </form>
+</div>
+
+<script>
+    function dismissAlert() {
+        document.getElementById('alert').style.display = 'none';
+    }
+</script>

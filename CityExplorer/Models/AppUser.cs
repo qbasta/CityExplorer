@@ -5,7 +5,6 @@ namespace CityExplorer.Models;
 
 public class AppUser : IdentityUser
 {
-    
     public string       Login          { get; set; } = "Anonymous";
     public string?      FirstName      { get; set; }
     public string?      LastName       { get; set; }

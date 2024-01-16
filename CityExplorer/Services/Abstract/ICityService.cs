@@ -9,5 +9,6 @@ namespace CityExplorer.Services.Abstract
         bool Delete(int id);
         City FindById(int id);
         IEnumerable<City> GetAll();
+        City FindByCityAndCountry(string cityName, string countryName);
     }
 }

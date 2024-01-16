@@ -1,8 +1,57 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
 }
+<link rel="stylesheet" href="~/css/styles.css"/>
+<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+
+<div class="bg-blue-500 text-white rounded-lg shadow-lg p-4">
+    <div class="grid grid-cols-4 gap-4">
+        <div class="col-span-1">
+            <img src="landmark-image.jpg" alt="Landmark Image" class="w-full h-auto rounded-lg">
+        </div>
+        <div class="col-span-1">
+            <h2 class="text-xl font-bold">Landmark Name</h2>
+            <p class="text-gray-300">Average Rating: <span class="text-white">4.5</span></p>
+            <p class="text-gray-300">Opening Hours: <span class="text-white">9:00 AM - 6:00 PM</span></p>
+            <p class="text-gray-300">Tour Duration: <span class="text-white">2 hours</span></p>
+        </div>
+        <div class="col-span-1">
+            <br />
+            <div class="text-gray-300">
+                <p>Categories:
+                <span class="text-white">Category 1, Category 2, Category 3</span></p>
+            </div>
+            <p class="text-gray-300">City: <span class="text-white">City Name</span></p>
+            <p class="text-gray-300">Country: <span class="text-white">Country Name</span></p>
+        </div>
+        <div class="col-span-1">
+                <button class="bg-gray-500 hover:bg-gray-700 text-white font-medium py-2 px-4 rounded-lg mt-2">Button 1</button>
+                <button class="bg-gray-500 hover:bg-gray-700 text-white font-medium py-2 px-4 rounded-lg mt-2">Button 2</button>
+                <br />
+                <button class="bg-gray-500 hover:bg-gray-700 text-white font-medium py-2 px-4 rounded-lg mt-2">Button 3</button>
+                <button class="bg-gray-500 hover:bg-gray-700 text-white font-medium py-2 px-4 rounded-lg mt-2">Button 4</button>
+        </div>
+    </div>
 </div>
+<body class="bg-coolGray-400">
+    <div class="container mx-auto px-4">
+        <h1 class="text-4xl font-bold mb-4 text-white">Witaj w CityExplorer!</h1>
+        <div class="grid grid-cols-1 gap-4">
+            <div class="p-4 border rounded bg-white">
+                <h2 class="text-2xl font-bold mb-2">Przeglądaj zabytki</h2>
+                <p>Możesz przeglądać listę zabytków oraz dodawać je do własnej prywatnej listy.</p>
+            </div>
+            <div class="p-4 border rounded bg-white">
+                <h2 class="text-2xl font-bold mb-2">Sprawdź trasy</h2>
+                <p>Sprawdź proponowane trasy między zabytkami. Zapisuj trasy w historii oraz udostępniaj je innym użytkownikom.</p>
+            </div>
+            <div class="p-4 border rounded bg-white">
+                <h2 class="text-2xl font-bold mb-2">Komentuj zabytki</h2>
+                <p>Możliwe jest komentowanie zabytków.</p>
+            </div>
+        </div>
+    </div>
+</body> 
+
+

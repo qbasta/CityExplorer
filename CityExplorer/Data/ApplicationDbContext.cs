@@ -11,14 +11,16 @@ public class ApplicationDbContext : IdentityDbContext<AppUser>
     {
     }
 
-    public DbSet<Landmark>         Landmarks          { get; set; }
-    public DbSet<City>             Cities             { get; set; }
-    public DbSet<Review>           Reviews            { get; set; }
-    public DbSet<AppUser>          AppUsers           { get; set; }
-    public DbSet<Category>         Categories         { get; set; }
-    public DbSet<LandmarkCategory> LandmarkCategories { get; set; }
-    public DbSet<UserLandmark>     UserLandmarks      { get; set; }
-    public DbSet<UserRoute>        UserRoutes         { get; set; }
+    public DbSet<Landmark>             Landmarks              { get; set; }
+    public DbSet<City>                 Cities                 { get; set; }
+    public DbSet<Review>               Reviews                { get; set; }
+    public DbSet<AppUser>              AppUsers               { get; set; }
+    public DbSet<Category>             Categories             { get; set; }
+    public DbSet<LandmarkCategory>     LandmarkCategories     { get; set; }
+    public DbSet<UserLandmarkList>     UserLandmarkLists      { get; set; }
+    public DbSet<UserLandmark>         UserLandmarks          { get; set; }
+
+
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -26,6 +28,9 @@ public class ApplicationDbContext : IdentityDbContext<AppUser>
 
         modelBuilder.Entity<LandmarkCategory>()
             .HasKey(lc => new { lc.LandmarkId, lc.CategoryId });
+        
+        modelBuilder.Entity<UserLandmark>()
+        .HasKey(ul => new { ul.LandmarkId, ul.UserLandmarkListId });
 
     }
 }
