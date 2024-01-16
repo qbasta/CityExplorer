@@ -1,6 +1,5 @@
 ﻿@model CityExplorer.Models.Landmark
 
-<link href="https://cdn.jsdelivr.net/npm/flowbite@1.0.0/dist/flowbite.min.css" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 <link rel="stylesheet" href="~/css/styles.css" asp-append-version="true" />
 
@@ -27,7 +26,7 @@
     <div class="grid grid-cols-2">
         <div class="p-6">
             <label class="block text-gray text-lg mb-2 control-label" asp-for="Name">Nazwa zabytku</label>
-                <input asp-for="Name" class="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="nazwa" type="text" name="nazwa" placeholder="Wprowadź nazwę zabytku" required>
+                <input asp-for="Name" class="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" type="text" name="Name" placeholder="Wprowadź nazwę zabytku">
 
             <label class="block text-gray text-lg mb-2 control-label" asp-for="Categories">Kategorie</label>
                 <select asp-items="Model.CategoryList" class="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" asp-for="Categories" multiple required></select>
@@ -41,7 +40,7 @@
         </div>
         <div class="p-6">
             <label class="block text-gray text-lg mb-2 control-label" asp-for="Description">Opis zabytku</label>
-                <textarea class="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" asp-for="Description" id="opis" name="opis" rows="5" placeholder="Wprowadź opis zabytku" required></textarea>
+                <textarea class="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" asp-for="Description" name="Description" rows="5" placeholder="Wprowadź opis zabytku"></textarea>
 
             <div class="flex space-x-4">
                 <div class="w-1/2">

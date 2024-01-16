@@ -40,27 +40,29 @@ using System.Security.Claims;
                 return View(model);
             }
 
-            [HttpPost]
-            public IActionResult Add(Landmark model)
+        [HttpPost]
+        public IActionResult Add(Landmark model)
+        {
+            ViewData["City"] = new SelectList(_cityService.GetAll(), "Id", "Name", model.CityId);
+            ViewData["Country"] = new SelectList(_cityService.GetAll(), "Id", "Country", model.CityId);
+
+            model.CategoryList = _categoryService.GetAll().Select(c => new SelectListItem
             {
+                Text = c.Name,
+                Value = c.Id.ToString()
+            });
 
-                ViewData["City"] = new SelectList(_cityService.GetAll(), "Id", "Name", model.CityId);
-                ViewData["Country"] = new SelectList(_cityService.GetAll(), "Id", "Country", model.CityId);
-
-                model.CategoryList = _categoryService.GetAll().Select(c => new SelectListItem
-                {
-                    Text = c.Name,
-                    Value = c.Id.ToString()
-                });
-
-                if(!ModelState.IsValid)
+            try
+            {
+                if (!ModelState.IsValid)
                 {
                     return View(model);
                 }
-                if(model.ImageFile != null)
+
+                if (model.ImageFile != null)
                 {
                     var fileResult = _fileService.SaveImage(model.ImageFile);
-                    if(fileResult.Item1 == 0)
+                    if (fileResult.Item1 == 0)
                     {
                         TempData["msg"] = "Plik nie mógł zostać zapisany";
                         return View(model);
@@ -68,8 +70,9 @@ using System.Security.Claims;
                     var imageName = fileResult.Item2;
                     model.ImagePath = imageName;
                 }
+
                 var result = _landmarkService.Add(model);
-                if(result)
+                if (result)
                 {
                     TempData["msg"] = "Zapisano pomyślnie";
                     return RedirectToAction(nameof(Add));
@@ -80,8 +83,16 @@ using System.Security.Claims;
                     return View(model);
                 }
             }
+            catch (Exception ex)
+            {
+                TempData["error"] = $"Wystąpił błąd: {ex.Message}";
+                return View(model);
+            }
+        }
 
-            public IActionResult Edit(int id)
+
+
+        public IActionResult Edit(int id)
             {
                var model = _landmarkService.GetById(id);
                var selectedCategories = _landmarkService.GetCategoryByLandmarkId(model.Id);
@@ -126,8 +137,8 @@ using System.Security.Claims;
                     TempData["msg"] = "Wystąpił błąd podczas zapisu";
                     return View(model);
                 }
-
             }
+
 
             [HttpPost]
             [ValidateAntiForgeryToken]

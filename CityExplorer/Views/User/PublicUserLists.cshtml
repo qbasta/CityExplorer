@@ -29,8 +29,8 @@
                             @:<div class="flex flex-col items-center">
                         }
                         <div class="flex flex-col items-center">
-                            <img src="/Uploads/@userLandmark.Landmark.ImagePath" class="w-24 h-24">
-                            <p>@userLandmark.Landmark.Name</p>
+                            <img src="/Uploads/@userLandmark.Landmark.ImagePath" class="rounded-lg max-w-1/2 max-h-1/2">
+                            <p class="font-bold">@userLandmark.Landmark.Name</p>
                         </div>
                         if ((i + 1) % 4 == 0 || i == list.UserLandmarks.Count - 1)
                         {
@@ -48,7 +48,7 @@
         }
         else
         {
-            <div class="flex justify-center items-center h-screen bg-blue-500">
+            <div class="flex justify-center items-center h-screen bg-gray-300">
                 <div class="bg-white py-8 px-10 rounded-lg shadow-lg">
                     <h1 class="text-xl font-semibold">Zaloguj się aby skorzystać ze wszystkich możliwości</h1>
                     <a href="login.html" class="mt-4 flex items-center justify-center bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-700 transition duration-300">

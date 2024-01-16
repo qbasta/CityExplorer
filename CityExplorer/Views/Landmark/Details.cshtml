@@ -70,13 +70,6 @@
                         <p class="ms-1 text-l font-bold text-gray-700">5</p>
                     </div>
                 </dd>
-
-                <dt class="col-sm-6">
-                    Opis zabytku
-                </dt>
-                <dd class="col-sm-6">
-                    @Html.DisplayFor(model => model.Landmark.Description)
-                </dd>
                 <dt class="col-sm-6">
                     Godziny otwarcia
                 </dt>
@@ -109,6 +102,12 @@
                     {
                         <div>@category.Text</div>
                     }
+                </dd>
+                <dt class="">
+                    Opis zabytku
+                </dt>
+                <dd class="">
+                    @Html.DisplayFor(model => model.Landmark.Description)
                 </dd>
             </dl>
         </div>

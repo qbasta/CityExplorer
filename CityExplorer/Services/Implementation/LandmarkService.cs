@@ -68,7 +68,7 @@ namespace CityExplorer.Services.Implementation
                                           List<int> categoryFilter = null, string cityFilter = "", string countryFilter = "")
         {
             var data = new LandmarkListViewModel();
-            var list = _context.Landmarks.Include(l => l.City).ToList();
+            var list = _context.Landmarks.Include(r => r.Reviews).Include(l => l.City).ToList();
 
             if (!string.IsNullOrEmpty(nameFilter))
             {
