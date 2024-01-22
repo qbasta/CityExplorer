@@ -1,57 +1,51 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
 }
-<link rel="stylesheet" href="~/css/styles.css"/>
+<link href="https://cdn.jsdelivr.net/npm/flowbite@1.0.0/dist/flowbite.min.css" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+<link rel="stylesheet" href="~/css/styles.css" asp-append-version="true" />
 
-
-<div class="bg-blue-500 text-white rounded-lg shadow-lg p-4">
-    <div class="grid grid-cols-4 gap-4">
-        <div class="col-span-1">
-            <img src="landmark-image.jpg" alt="Landmark Image" class="w-full h-auto rounded-lg">
-        </div>
-        <div class="col-span-1">
-            <h2 class="text-xl font-bold">Landmark Name</h2>
-            <p class="text-gray-300">Average Rating: <span class="text-white">4.5</span></p>
-            <p class="text-gray-300">Opening Hours: <span class="text-white">9:00 AM - 6:00 PM</span></p>
-            <p class="text-gray-300">Tour Duration: <span class="text-white">2 hours</span></p>
-        </div>
-        <div class="col-span-1">
-            <br />
-            <div class="text-gray-300">
-                <p>Categories:
-                <span class="text-white">Category 1, Category 2, Category 3</span></p>
+<div class="flex justify-center">
+    <div class="bg-gray-200 border-3 border-gray-900 text-gray rounded-lg shadow-lg p-4 w-5/6">
+        <div class="flex items-center mb-4">
+            <div class="w-1/2">
+                <h1 class="text-4xl text-center font-bold">CityExplorer</h1>
+                <p class="mt-3 text-center text-2xl font-semibold text-gray-700">Aplikacja społecznościowa pozwalająca zaplanować trasę zwiedzania miasta.</p>
             </div>
-            <p class="text-gray-300">City: <span class="text-white">City Name</span></p>
-            <p class="text-gray-300">Country: <span class="text-white">Country Name</span></p>
+            <div class="w-1/2">
+                <img src="/Image/travel3.jpg" alt="Image" class="w-full border-3 border-gray-900 h-auto rounded image-size">
+            </div>
         </div>
-        <div class="col-span-1">
-                <button class="bg-gray-500 hover:bg-gray-700 text-white font-medium py-2 px-4 rounded-lg mt-2">Button 1</button>
-                <button class="bg-gray-500 hover:bg-gray-700 text-white font-medium py-2 px-4 rounded-lg mt-2">Button 2</button>
-                <br />
-                <button class="bg-gray-500 hover:bg-gray-700 text-white font-medium py-2 px-4 rounded-lg mt-2">Button 3</button>
-                <button class="bg-gray-500 hover:bg-gray-700 text-white font-medium py-2 px-4 rounded-lg mt-2">Button 4</button>
+        <div class="flex items-center mb-4">
+            <div class="w-1/2 container-sm">
+                <img src="/Image/travel1.jpg" alt="Image" class="w-full border-3 border-gray-900 h-auto rounded image-size" />
+            </div>
+            <div class="w-1/2">
+                <h1 class="text-4xl text-center font-bold">1. Znajdź zabytki</h1>
+                <p class="mt-2 text-2xl text-center font-semibold leading-loose text-gray-700">Znajdź zabytki, które chcesz odwiedzić.</p>
+                <p class="mt-3 ml-3 text-center text-xl font-semibold text-gray-500">Korzystając z listy wszystkich zabytków, wybierz te które chcesz zobaczyć aby utworzyć nową listę</p>
+            </div>
+        </div>
+        <div class="flex items-center mb-4">
+            <div class="w-1/2">
+                <h1 class="text-4xl text-center font-bold">2. Zaplanuj trasę</h1>
+                <p class="mt-2 text-2xl text-center font-semibold leading-loose text-gray-700">Zaplanuj trasę zwiedzania miasta.</p>
+                <p class="mt-3 mr-2 text-center text-xl font-semibold text-gray-500">Po dodaniu zabytków które cię interesują, możesz wyświetlić trasę zwiedzania miasta.</p>
+            </div>
+            <div class="w-1/2 container-sm">
+                <img src="/Image/travel5.jpg" alt="Image" class="w-full border-3 border-gray-900 h-auto rounded image-size" />
+            </div>
+        </div>
+        <div class="flex items-center mb-4">
+            <div class="w-1/2 container-sm">
+                <img src="/Image/travel2.jpg" alt="Image" class="w-full border-3 border-gray-900 h-auto rounded image-size" />
+            </div>
+            <div class="w-1/2">
+                <h1 class="text-4xl text-center font-bold">3. Udostępnij trasę</h1>
+                <p class="mt-2 text-2xl text-center font-semibold leading-loose text-gray-700">Udostępnij trasę innym użytkownikom.</p>
+                <p class="mt-3 ml-3 text-center text-xl font-semibold text-gray-500">Po zapisaniu swojej trasy możesz udostępnić ją udostępnić innym użytkownikom, aby mogli ją zobaczyć i wykorzystać.</p>
+            </div>
         </div>
     </div>
 </div>
-<body class="bg-coolGray-400">
-    <div class="container mx-auto px-4">
-        <h1 class="text-4xl font-bold mb-4 text-white">Witaj w CityExplorer!</h1>
-        <div class="grid grid-cols-1 gap-4">
-            <div class="p-4 border rounded bg-white">
-                <h2 class="text-2xl font-bold mb-2">Przeglądaj zabytki</h2>
-                <p>Możesz przeglądać listę zabytków oraz dodawać je do własnej prywatnej listy.</p>
-            </div>
-            <div class="p-4 border rounded bg-white">
-                <h2 class="text-2xl font-bold mb-2">Sprawdź trasy</h2>
-                <p>Sprawdź proponowane trasy między zabytkami. Zapisuj trasy w historii oraz udostępniaj je innym użytkownikom.</p>
-            </div>
-            <div class="p-4 border rounded bg-white">
-                <h2 class="text-2xl font-bold mb-2">Komentuj zabytki</h2>
-                <p>Możliwe jest komentowanie zabytków.</p>
-            </div>
-        </div>
-    </div>
-</body> 
-
-
+<script src="../path/to/flowbite/dist/flowbite.min.js"></script>

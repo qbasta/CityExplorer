@@ -40,3 +40,25 @@ body {
 .btn-yellow {
     @apply text-white bg-yellow-400 hover:bg-yellow-500 focus:outline-none focus:ring-4 focus:ring-yellow-300 font-medium rounded-full text-sm px-5 py-2.5 text-center me-2 mb-2 dark:focus:ring-yellow-900;
 }
+
+.image-size {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+
+.custom-nav-item .nav-link {
+    border-bottom: 2px solid blue; /* Dodaje niebiesk¹ liniê pod przyciskami */
+    margin-right: 10px; /* Dodaje przestrzeñ miêdzy przyciskami */
+}
+
+.custom-nav-link:hover {
+    background-color: #ddd; /* Zmienia t³o przycisku na ciemniejsze po najechaniu */
+    border-radius: 5px; /* Dodaje zaokr¹glenie do t³a przycisku */
+}
+
+.text-center {
+    text-align: center;
+}
+

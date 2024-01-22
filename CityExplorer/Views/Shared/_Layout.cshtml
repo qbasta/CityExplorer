@@ -10,30 +10,36 @@
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3 wider-navbar" style="height: 120%;">
             <div class="container-fluid">
                 <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">CityExplorer</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
+                        aria-expanded="false" aria-label="Toggle navigation" style="font-size: 1.2em;">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
+                    <ul class="navbar-nav mx-auto custom-nav-item">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="User" asp-action="PublicUserLists">Trasy użytkowników</a>
+                            <a class="nav-link text-dark custom-nav-link" asp-area="" asp-controller="User" asp-action="PublicUserLists" style="font-size: 1.2em;">Trasy użytkowników</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Landmark" asp-action="LandmarkList">Lista zabytków</a>
+                            <a class="nav-link text-dark custom-nav-link" asp-area="" asp-controller="Landmark" asp-action="LandmarkList" style="font-size: 1.2em;">Lista zabytków</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="User" asp-action="UserList">Moja lista</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="User" asp-action="SavedUserLists">Zapisane trasy</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Administrator" asp-action="">Panel administratora</a>
-                        </li>
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark custom-nav-link" asp-area="" asp-controller="User" asp-action="UserList" style="font-size: 1.2em;">Moja lista</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark custom-nav-link" asp-area="" asp-controller="User" asp-action="SavedUserLists" style="font-size: 1.2em;">Zapisane trasy</a>
+                            </li>
+                        }
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark custom-nav-link" asp-area="" asp-controller="Administrator" asp-action="" style="font-size: 1.2em;">Panel administratora</a>
+                            </li>
+                        }
                     </ul>
                     <partial name="_LoginPartial" />
                 </div>
@@ -47,8 +53,8 @@
     </div>
 
     <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2023 - CityExplorer - <a asp-area="" asp-controller="Home" asp-action="Privacy"></a>
+        <div class="container text-center">
+            &copy; 2024 - CityExplorer - Politechnika Białostocka
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
